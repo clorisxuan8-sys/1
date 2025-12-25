@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老己的2025年年终总结</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ============ 开场页面 ============ */
+        .intro-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe4ec 50%, #ffd6e0 100%);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .intro-page.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .intro-content {
+            text-align: center;
+            padding: 40px;
+            animation: fadeInUp 1.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .intro-title {
+            font-size: 2.5rem;
+            color: #d4627a;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(212, 98, 122, 0.2);
+        }
+
+        .intro-poem {
+            font-size: 1.3rem;
+            color: #8b5a6a;
+            line-height: 2.5;
+            margin-bottom: 50px;
+            font-style: italic;
+        }
+
+        .intro-poem p {
+            margin: 10px 0;
+            animation: fadeIn 1s ease forwards;
+            opacity: 0;
+        }
+
+        .intro-poem p:nth-child(1) { animation-delay: 0.5s; }
+        .intro-poem p:nth-child(2) { animation-delay: 1s; }
+        .intro-poem p:nth-child(3) { animation-delay: 1.5s; }
+        .intro-poem p:nth-child(4) { animation-delay: 2s; }
+        .intro-poem p:nth-child(5) { animation-delay: 2.5s; }
+        .intro-poem p:nth-child(6) { animation-delay: 3s; }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .enter-btn {
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #f8a5b8 0%, #f0778a 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(240, 119, 138, 0.4);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(240, 119, 138, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* 樱花飘落 */
+        .sakura {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(135deg, #ffb7c5 0%, #ff91a4 100%);
+            border-radius: 50% 0 50% 50%;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0.3;
+            }
+        }
+
+        /* 蝴蝶 */
+        .butterfly {
+            position: absolute;
+            font-size: 2rem;
+            animation: flutter 8s ease-in-out infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes flutter {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(100px, -50px) rotate(10deg);
+            }
+            50% {
+                transform: translate(50px, 50px) rotate(-5deg);
+            }
+            75% {
+                transform: translate(-50px, -30px) rotate(15deg);
+            }
+        }
+
+        /* ============ 主页面 ============ */
+        .main-page {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #fff9f9 0%, #fff0f3 100%);
+            padding: 30px 20px;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #d4627a;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(212, 98, 122, 0.15);
+        }
+
+        .sections-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(212, 98, 122, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #d4627a;
+            margin-bottom: 15px;
+        }
+
+        .section-desc {
+            color: #999;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .draw-btn {
+            padding: 12px 40px;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #ffb6c1 0%, #ff91a4 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 145, 164, 0.4);
+        }
+
+        .draw-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 145, 164, 0.5);
+        }
+
+        .disclaimer {
+            background: #fff5f5;
+            border-left: 4px solid #ffb6c1;
+            padding: 10px 15px;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #c97a84;
+            border-radius: 0 10px 10px 0;
+            text-align: left;
+        }
+
+        /* ============ 祝福卡片弹窗 ============ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .blessing-card {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            min-height: 500px;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            animation: cardAppear 0.6s ease;
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.8) rotateY(90deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotateY(0deg);
+            }
+        }
+
+        .card-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                rgba(255,255,255,0.1) 0%, 
+                rgba(255,255,255,0.85) 60%, 
+                rgba(255,255,255,0.95) 100%);
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 10;
+            padding: 40px 30px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .card-category {
+            font-size: 0.9rem;
+            color: #f0778a;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .card-text {
+            font-size: 1.25rem;
+            color: #5a4a4a;
+            line-height: 2;
+            margin-bottom: 30px;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-signature {
+            font-size: 0.9rem;
+            color: #c9a0a0;
+            font-style: italic;
+        }
+
+        .card-close {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f8a5b8 0%, #f0778a 100%);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(240, 119, 138, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .card-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .redraw-btn {
+            margin-top: 20px;
+            padding: 10px 25px;
+            background: transparent;
+            border: 2px solid #f0778a;
+            color: #f0778a;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .redraw-btn:hover {
+            background: #f0778a;
+            color: white;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .intro-title {
+                font-size: 1.8rem;
+            }
+            .intro-poem {
+                font-size: 1.1rem;
+            }
+            .main-title {
+                font-size: 1.8rem;
+            }
+            .section {
+                padding: 25px 20px;
+            }
+            .blessing-card {
+                min-height: 450px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 开场页面 -->
+    <div class="intro-page" id="introPage">
+        <!-- 樱花将通过JS生成 -->
+        <!-- 蝴蝶 -->
+        <div class="butterfly" style="top: 20%; left: 10%;">🦋</div>
+        <div class="butterfly" style="top: 30%; right: 15%; animation-delay: -2s;">🦋</div>
+        <div class="butterfly" style="top: 60%; left: 20%; animation-delay: -4s;">🦋</div>
+        <div class="butterfly" style="top: 70%; right: 10%; animation-delay: -6s;">🦋</div>
+
+        <div class="intro-content">
+            <h1 class="intro-title">🌸 老己的2025年年终总结 🌸</h1>
+            <div class="intro-poem">
+                <p>本以为人间行色匆匆，</p>
+                <p>无人在意云起云落、花开花谢</p>
+                <p>偏偏遇到了一群可爱的人</p>
+                <p>与我春观花、夏赏荷、秋品诗、冬吃鱼</p>
+                <p>历经日落月升、山河远阔</p>
+                <p>皆有福气 💕</p>
+            </div>
+            <button class="enter-btn" onclick="enterMain()">✨ 开启我的祝福 ✨</button>
+        </div>
+    </div>
+
+    <!-- 主页面 -->
+    <div class="main-page" id="mainPage">
+        <h1 class="main-title">🎐 选择你想要的祝福类型 🎐</h1>
+        
+        <div class="sections-container">
+            <!-- 文艺版块 -->
+            <div class="section">
+                <div class="section-icon">📜</div>
+                <h2 class="section-title">文艺版块</h2>
+                <p class="section-desc">诗意温柔的祝福<br>像春风拂过心间</p>
+                <button class="draw-btn" onclick="drawBlessing('literary')">抽取祝福</button>
+            </div>
+
+            <!-- 平淡温馨版块 -->
+            <div class="section">
+                <div class="section-icon">🏠</div>
+                <h2 class="section-title">平淡温馨版块</h2>
+                <p class="section-desc">简单真挚的祝福<br>如家的温暖怀抱</p>
+                <button class="draw-btn" onclick="drawBlessing('warm')">抽取祝福</button>
+            </div>
+
+            <!-- 搞笑版块 -->
+            <div class="section">
+                <div class="section-icon">😂</div>
+                <h2 class="section-title">搞笑版块</h2>
+                <p class="section-desc">快乐加倍的祝福<br>让你笑着迎新年</p>
+                <button class="draw-btn" onclick="drawBlessing('funny')">抽取祝福</button>
+                <div class="disclaimer">
+                    ⚠️ 免责声明：本版块祝福可能引起捧腹大笑、表情失控等症状，后果自负哦～
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 祝福卡片弹窗 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="blessing-card" id="blessingCard">
+            <div class="card-background" id="cardBackground"></div>
+            <div class="card-overlay"></div>
+            <div class="card-content">
+                <div class="card-category" id="cardCategory"></div>
+                <div class="card-text" id="cardText"></div>
+                <div class="card-footer">
+                    <span class="card-signature">—— 老己 2025 ——</span>
+                    <button class="card-close" onclick="closeModal()">×</button>
+                </div>
+                <button class="redraw-btn" id="redrawBtn" onclick="">🎲 再抽一张</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 图片数组
+        const images = [
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/0364069d607178085976a6fcf07922c0.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/253892ad60ab4bdd126071b32a0ad105.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/30e315de9a59579f991c4836c4f6c7c5.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/348529f166d5a74f9d4031e40d96f07d.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/460c6d8d9a413edba4981a9f0b213d31.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/4800fc88df4bd4308bc6042050746083.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/4d5184adfb5c03d06a99922d8f43e5f8.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/5d2f8141f9ba149788b58f6bae57db76.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/62bf2e0a6ef5109890c9c99c1290053d.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/674fb1e841ed2b1598e47108a5f97994.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/67ec3328a9f484908990127ec2ffe823.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/6aff48c5339f50a04407b76fa433b6ed.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/6e21039d9ebac95707aaf876e0e590f6.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/8c680ece3d9c18fbbb6f08985eeb61d1.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/9148270242306ba8e90f3f1fb38806e7.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/a3db62c87966db9c48d5417f51840018.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/aa081d153f9689631139915cf11fe207.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/b49f7308b6b43ccc26f3460f9645216c.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/c09931a69b8913ac476f78ac505b9928.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/c88101adf334be13d30d3c9857c5a4fa.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/cf9fa974812e3010c281092606526eff.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/d058d942307dd08cd8ef094887add727.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/d854a55d69ad9d69c7191eb6a807f645.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/e052f0b2d29b73a6eaab0a075acb0b14.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/ef2013290d1b9c168b0b253916c6a55d.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/f09d440f04fdece831004f52c8b41e0c.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/f4780bc8a1d6fc8536d5767b97fb53b2.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/f6e08f58a864fb0d81e810fb7452cbce.jpg'
+        ];
+
+        // 祝福语数据
+        const blessings = {
+            literary: [
+                "愿你的2025，如诗如画，如梦如歌。每一个清晨都有温柔的阳光，每一个夜晚都有皎洁的月光相伴。",
+                "愿你在新的一年里，与美好不期而遇，与温柔撞个满怀。所有的期待都能如约而至。",
+                "愿你的心中有花开，眼里有星辰，步履不停，温柔且坚定地走过2025的每一天。",
+                "愿你如春风般自在，如夏花般绚烂，如秋叶般从容，如冬雪般纯净。",
+                "愿你在时光的长河里，采撷属于自己的那束光，照亮前行的路，也温暖身边的人。",
+                "愿你的故事里写满热爱，愿你的生活里充满诗意，愿你成为自己的太阳，不必借谁的光。",
+                "愿你心有所向，未来可期。愿你眼中有光，笑里有糖。2025，愿你被世界温柔以待。",
+                "愿你像风一样自由，像花一样美丽，像星星一样闪闪发光，2025继续做那个独一无二的你。",
+                "愿岁月温柔以待，愿时光不负深情，愿你所遇皆温暖，所见皆美好。",
+                "愿你在人生的旅途上，一路繁花相送，一路清风相伴，不负韶华，不负自己。"
+            ],
+            warm: [
+                "愿你三餐四季，温暖有趣。愿你有人疼有人爱，平安喜乐度过每一天。",
+                "愿你的冰箱永远有喜欢的食物，手机永远有电，卡里永远有钱，身边永远有爱你的人。",
+                "愿你睡得安稳，吃得健康，笑得开心，爱得坦荡。简简单单，平平安安。",
+                "愿你的2025，有热乎乎的饭菜，暖洋洋的被窝，和一个总是想着你的人。",
+                "愿你家人康健，朋友常伴，工作顺利，生活如意。平凡的日子里藏着最真实的幸福。",
+                "愿你不再为琐事烦恼，不再为明天焦虑。愿你活在当下，珍惜眼前，好好爱自己。",
+                "愿你的快乐是日常，而不是偶尔。愿你的烦恼越来越少，微笑越来越多。",
+                "愿你下班的路上有晚霞相迎，回家的灯永远为你亮着，桌上永远有热腾腾的饭菜。",
+                "愿你2025年，早起不困，熬夜不累，零食吃不胖，喜欢的都拥有，失去的都释怀。",
+                "愿你兜里有钱，身边有爱，心中有梦，眼里有光。新的一年，继续做个幸福的人。"
+            ],
+            funny: [
+                "祝你2025年：脱单速度比脱发快，发财速度比发胖快，变美速度比变老快！",
+                "愿你的2025：工资像身高一样高不可攀，体重像发际线一样逐渐后退！",
+                "祝你新年暴富！暴瘦！爆美！如果只能选一个的话，那就...都要！",
+                "愿你2025年：钱包鼓鼓，头发多多，皮肤滑滑，身材好好。做梦都会笑醒！",
+                "祝你2025年：上班摸鱼不被抓，熬夜追剧不脱发，吃啥都不胖，睡醒就暴富！",
+                "愿你新的一年：WiFi信号满格，快递从不丢件，外卖永远准时，追的剧不会烂尾！",
+                "祝你2025年：走路捡到钱，吃饭有人请，干啥啥顺利，躺着就能赢！",
+                "愿你2025年：瘦成一道闪电，帅到没有边，美到不能见，富到流油的那种！",
+                "祝你新年：工资翻倍涨，假期翻倍长，零食翻倍多，烦恼全清零！",
+                "愿你的2025年：中奖概率100%，堵车概率0%，碰到前任概率-100%！数学好的都懂！"
+            ]
+        };
+
+        const categoryNames = {
+            literary: '📜 文艺版块',
+            warm: '🏠 平淡温馨版块',
+            funny: '😂 搞笑版块'
+        };
+
+        let currentCategory = '';
+
+        // 创建樱花
+        function createSakura() {
+            const introPage = document.getElementById('introPage');
+            for (let i = 0; i < 30; i++) {
+                const sakura = document.createElement('div');
+                sakura.className = 'sakura';
+                sakura.style.left = Math.random() * 100 + '%';
+                sakura.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                sakura.style.animationDelay = Math.random() * 10 + 's';
+                sakura.style.width = (Math.random() * 10 + 10) + 'px';
+                sakura.style.height = sakura.style.width;
+                introPage.appendChild(sakura);
+            }
+        }
+
+        // 进入主页面
+        function enterMain() {
+            document.getElementById('introPage').classList.add('hidden');
+        }
+
+        // 抽取祝福
+        function drawBlessing(category) {
+            currentCategory = category;
+            const blessingList = blessings[category];
+            const randomBlessing = blessingList[Math.floor(Math.random() * blessingList.length)];
+            const randomImage = images[Math.floor(Math.random() * images.length)];
+
+            document.getElementById('cardCategory').textContent = categoryNames[category];
+            document.getElementById('cardText').textContent = randomBlessing;
+            document.getElementById('cardBackground').style.backgroundImage = `url('${randomImage}')`;
+            document.getElementById('redrawBtn').onclick = function() { drawBlessing(category); };
+            
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        // 点击遮罩关闭
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // 初始化
+        createSakura();
+    </script>
+</body>
+</html>
