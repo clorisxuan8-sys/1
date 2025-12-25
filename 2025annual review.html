@@ -18,7 +18,6 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: linear-gradient(180deg, #fefefe 0%, #fff9f5 40%, #fff5f0 70%, #ffede8 100%);
             z-index: 1000;
             display: flex;
             flex-direction: column;
@@ -33,34 +32,27 @@
             pointer-events: none;
         }
 
-        /* 底部花草背景图 */
-        .flora-background {
+        /* 开场页背景 - 底部对齐，展示花草 */
+        .intro-bg {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 45%;
-            background-image: url('https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/2cc005764fc23162ea34703f720d898f.png');
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/背景图.jpg');
             background-size: cover;
             background-position: center bottom;
             background-repeat: no-repeat;
-            opacity: 0.9;
             z-index: 1;
         }
-
-        /* 花草图上方的渐变遮罩，让过渡更自然 */
-        .flora-gradient {
+        .intro-overlay {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: linear-gradient(180deg, 
-                rgba(255,249,245,1) 0%, 
-                rgba(255,249,245,0.6) 30%, 
-                rgba(255,249,245,0) 60%);
+                rgba(255,253,250,0.85) 0%, 
+                rgba(255,250,245,0.7) 40%, 
+                rgba(255,248,242,0.4) 70%,
+                rgba(255,245,240,0.1) 100%);
             z-index: 2;
-            pointer-events: none;
         }
 
         /* 樱花花瓣 */
@@ -110,7 +102,7 @@
             line-height: 2.6;
             letter-spacing: 2px;
             margin-bottom: 50px;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+            text-shadow: 0 1px 3px rgba(255,255,255,0.9);
         }
         .intro-poem .line {
             display: block;
@@ -157,28 +149,58 @@
         /* ============ 主页面 ============ */
         .main-page {
             min-height: 100vh;
-            background: linear-gradient(180deg, #fffdf9 0%, #fff8f2 50%, #fff3ec 100%);
             padding: 50px 20px 80px;
             position: relative;
+            overflow: hidden;
         }
-        .page-deco {
-            position: absolute;
-            font-size: 1.3rem;
-            opacity: 0.5;
-            animation: gentleFloat 6s ease-in-out infinite;
+
+        /* 主页面背景 - 顶部对齐，展示上半部分 */
+        .main-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/背景图.jpg');
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            z-index: -2;
+        }
+        .main-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, 
+                rgba(255,253,250,0.75) 0%, 
+                rgba(255,250,245,0.82) 30%, 
+                rgba(255,248,242,0.88) 60%,
+                rgba(255,245,240,0.7) 100%);
+            z-index: -1;
+        }
+
+        /* 主页面樱花 */
+        .main-sakura {
+            position: fixed;
+            background: linear-gradient(135deg, #ffd6e0 0%, #ffb6c1 40%, #ffa0aa 100%);
+            border-radius: 50% 0 50% 50%;
+            box-shadow: 0 2px 10px rgba(255, 182, 193, 0.3);
+            animation: petalFall linear infinite;
             pointer-events: none;
+            z-index: 0;
         }
-        @keyframes gentleFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-12px) rotate(8deg); }
+
+        .page-header { 
+            text-align: center; 
+            margin-bottom: 50px; 
+            position: relative;
+            z-index: 5;
         }
-        .page-header { text-align: center; margin-bottom: 50px; }
         .page-title {
             font-size: 1.7rem;
             color: #6b5a52;
             letter-spacing: 5px;
             font-weight: 400;
             margin-bottom: 12px;
+            text-shadow: 0 2px 4px rgba(255,255,255,0.8);
         }
         .page-subtitle {
             font-size: 0.95rem;
@@ -192,6 +214,8 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 28px;
             padding: 0 15px;
+            position: relative;
+            z-index: 5;
         }
         @media (max-width: 850px) {
             .sections-container {
@@ -200,14 +224,15 @@
             }
         }
         .section-card {
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.88);
             border-radius: 24px;
             padding: 38px 28px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(180, 160, 145, 0.1);
+            box-shadow: 0 8px 32px rgba(180, 160, 145, 0.15);
             transition: all 0.4s ease;
-            border: 1px solid rgba(255, 230, 220, 0.5);
+            border: 1px solid rgba(255, 230, 220, 0.6);
             position: relative;
+            backdrop-filter: blur(8px);
         }
         .section-card::before {
             content: '';
@@ -219,7 +244,8 @@
         }
         .section-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(180, 160, 145, 0.18);
+            box-shadow: 0 20px 50px rgba(180, 160, 145, 0.22);
+            background: rgba(255, 255, 255, 0.95);
         }
         .section-icon { font-size: 3.2rem; margin-bottom: 20px; display: block; }
         .section-title {
@@ -253,7 +279,7 @@
             box-shadow: 0 10px 30px rgba(248, 181, 149, 0.5);
         }
         .disclaimer {
-            background: linear-gradient(135deg, #fff8f5 0%, #fff2ec 100%);
+            background: linear-gradient(135deg, rgba(255,248,245,0.9) 0%, rgba(255,242,236,0.9) 100%);
             border-radius: 14px;
             padding: 14px 16px;
             margin-top: 22px;
@@ -271,6 +297,8 @@
             font-size: 0.9rem;
             text-decoration: none;
             letter-spacing: 2px;
+            position: relative;
+            z-index: 5;
         }
         .back-home:hover { color: #8b7a70; }
 
@@ -327,14 +355,14 @@
             width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
-            opacity: 0.32;
+            opacity: 0.35;
         }
         .card-overlay {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
             background: linear-gradient(180deg, 
-                rgba(255,252,249,0.25) 0%, 
+                rgba(255,252,249,0.3) 0%, 
                 rgba(255,252,249,0.65) 35%, 
                 rgba(255,252,249,0.92) 100%);
         }
@@ -408,15 +436,15 @@
 <body>
     <!-- 开场页面 -->
     <div class="intro-page" id="introPage">
-        <!-- 底部花草背景图 -->
-        <div class="flora-background"></div>
-        <div class="flora-gradient"></div>
+        <!-- 背景图 - 底部花草 -->
+        <div class="intro-bg"></div>
+        <div class="intro-overlay"></div>
 
         <!-- 蝴蝶 -->
         <div class="butterfly" style="top: 12%; left: 8%;">🦋</div>
         <div class="butterfly" style="top: 20%; right: 12%; animation-delay: -4s;">🦋</div>
-        <div class="butterfly" style="top: 40%; left: 5%; animation-delay: -8s; font-size: 1.8rem;">🦋</div>
-        <div class="butterfly" style="top: 35%; right: 8%; animation-delay: -12s;">🦋</div>
+        <div class="butterfly" style="top: 38%; left: 5%; animation-delay: -8s; font-size: 1.8rem;">🦋</div>
+        <div class="butterfly" style="top: 32%; right: 8%; animation-delay: -12s;">🦋</div>
 
         <!-- 开头语 -->
         <div class="intro-content">
@@ -434,10 +462,9 @@
 
     <!-- 主页面 -->
     <div class="main-page">
-        <div class="page-deco" style="top: 8%; left: 4%;">🌸</div>
-        <div class="page-deco" style="top: 15%; right: 6%; animation-delay: -2s;">🍃</div>
-        <div class="page-deco" style="top: 55%; left: 3%; animation-delay: -4s;">🌷</div>
-        <div class="page-deco" style="top: 65%; right: 4%; animation-delay: -1s;">🦋</div>
+        <!-- 背景图 - 顶部花朵 -->
+        <div class="main-bg"></div>
+        <div class="main-overlay"></div>
 
         <div class="page-header">
             <h1 class="page-title">~ 选择您的祝福 ~</h1>
@@ -576,10 +603,10 @@
 
         let currentCategory = '';
 
-        // 创建樱花
-        function createSakura() {
+        // 创建开场页樱花
+        function createIntroSakura() {
             const intro = document.getElementById('introPage');
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 35; i++) {
                 const petal = document.createElement('div');
                 petal.className = 'sakura';
                 petal.style.left = Math.random() * 100 + '%';
@@ -589,6 +616,22 @@
                 petal.style.animationDelay = Math.random() * 12 + 's';
                 petal.style.opacity = Math.random() * 0.4 + 0.5;
                 intro.appendChild(petal);
+            }
+        }
+
+        // 创建主页面樱花
+        function createMainSakura() {
+            const main = document.querySelector('.main-page');
+            for (let i = 0; i < 25; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'main-sakura';
+                petal.style.left = Math.random() * 100 + '%';
+                petal.style.width = (Math.random() * 8 + 6) + 'px';
+                petal.style.height = petal.style.width;
+                petal.style.animationDuration = (Math.random() * 8 + 10) + 's';
+                petal.style.animationDelay = Math.random() * 15 + 's';
+                petal.style.opacity = Math.random() * 0.3 + 0.4;
+                main.appendChild(petal);
             }
         }
 
@@ -629,7 +672,8 @@
         });
 
         // 初始化
-        createSakura();
+        createIntroSakura();
+        createMainSakura();
     </script>
 </body>
 </html>
