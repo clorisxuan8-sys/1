@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 元旦快乐 - 昆明市第一人民医院护理团队</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #f5ebe0 0%, #fae8d4 50%, #f5ebe0 100%);
+            font-family: 'ZCOOL XiaoWei', 'PingFang SC', 'Microsoft YaHei', serif;
+            overflow-x: hidden;
+        }
+
+        /* ==================== 入场页面 ==================== */
+        .intro-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #f5ebe0 0%, #fae8d4 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
+            transition: opacity 1.2s ease, visibility 1.2s ease;
+        }
+
+        .intro-page.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* 入场页金币 */
+        .intro-coins {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .intro-coin {
+            position: absolute;
+            font-size: 24px;
+            animation: coin-fall 4s linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes coin-fall {
+            0% {
+                transform: translateY(-50px) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .intro-content {
+            text-align: center;
+            z-index: 10;
+        }
+
+        .intro-top-text {
+            font-size: 14px;
+            color: #8b7355;
+            letter-spacing: 8px;
+            margin-bottom: 30px;
+        }
+
+        .intro-year {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: clamp(80px, 22vw, 150px);
+            color: #c53d43;
+            text-shadow: 3px 3px 0 rgba(197, 61, 67, 0.2);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .intro-happy {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: clamp(50px, 14vw, 100px);
+            color: #c53d43;
+            line-height: 1.1;
+        }
+
+        .intro-subtitle {
+            font-size: clamp(16px, 4vw, 22px);
+            color: #8b7355;
+            letter-spacing: 6px;
+            margin: 30px 0;
+        }
+
+        .intro-hospital {
+            font-size: clamp(12px, 3vw, 16px);
+            color: #a08060;
+            letter-spacing: 3px;
+            margin-top: 20px;
+            padding: 10px 25px;
+            border: 1px solid rgba(160, 128, 96, 0.3);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .intro-hint {
+            position: absolute;
+            bottom: 80px;
+            font-size: 14px;
+            color: #a08060;
+            letter-spacing: 3px;
+            animation: hint-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes hint-pulse {
+            0%, 100% { opacity: 0.5; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
+        }
+
+        /* ==================== 主页面 ==================== */
+        .main-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            opacity: 0;
+            transition: opacity 1s ease 0.5s;
+            position: relative;
+        }
+
+        .main-page.visible {
+            opacity: 1;
+        }
+
+        /* 背景装饰 */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(197, 61, 67, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 金币飘落 */
+        .coins-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .coin {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 50%, #daa520 100%);
+            border-radius: 50%;
+            box-shadow: 
+                inset -3px -3px 6px rgba(0,0,0,0.2),
+                inset 3px 3px 6px rgba(255,255,255,0.4),
+                0 2px 10px rgba(218, 165, 32, 0.3);
+            animation: coin-float 6s linear infinite;
+        }
+
+        .coin::before {
+            content: '福';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            color: #8b4513;
+            font-weight: bold;
+        }
+
+        @keyframes coin-float {
+            0% {
+                transform: translateY(-60px) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(calc(100vh + 60px)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* 烟花装饰 */
+        .firework-decor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .firework-decor.left {
+            left: 5%;
+            bottom: 20%;
+            width: 100px;
+            height: 150px;
+            background: radial-gradient(ellipse at center bottom, rgba(255, 215, 0, 0.4) 0%, transparent 70%);
+        }
+
+        .firework-decor.right {
+            right: 5%;
+            bottom: 25%;
+            width: 120px;
+            height: 180px;
+            background: radial-gradient(ellipse at center bottom, rgba(255, 180, 0, 0.3) 0%, transparent 70%);
+        }
+
+        /* 主内容 */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .top-label {
+            display: inline-block;
+            font-size: 12px;
+            color: #8b7355;
+            letter-spacing: 6px;
+            padding: 8px 20px;
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            border-radius: 3px;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .main-greeting {
+            font-size: clamp(14px, 3.5vw, 18px);
+            color: #8b7355;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+        }
+
+        .main-year {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: clamp(90px, 25vw, 160px);
+            color: #c53d43;
+            text-shadow: 4px 4px 0 rgba(197, 61, 67, 0.15);
+            line-height: 1;
+            margin-bottom: 0;
+        }
+
+        .main-happy {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: clamp(55px, 15vw, 95px);
+            color: #c53d43;
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+
+        /* 中式祝福语 */
+        .chinese-blessing {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: clamp(40px, 12vw, 70px);
+            color: #c53d43;
+            letter-spacing: 5px;
+            margin: 30px 0;
+            text-shadow: 2px 2px 0 rgba(197, 61, 67, 0.1);
+        }
+
+        /* 医院卡片 */
+        .hospital-card {
+            margin: 30px auto;
+            padding: 25px 35px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
+            border: 1px solid rgba(197, 61, 67, 0.2);
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(139, 115, 85, 0.1);
+            position: relative;
+        }
+
+        .hospital-card::before {
+            content: '💝';
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+            background: #f5ebe0;
+            padding: 0 15px;
+        }
+
+        .hospital-name {
+            font-size: clamp(14px, 3.5vw, 18px);
+            color: #c53d43;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .hospital-wish {
+            font-size: clamp(18px, 5vw, 26px);
+            color: #5c4033;
+            letter-spacing: 5px;
+        }
+
+        /* 抽取按钮 */
+        .blessing-btn {
+            margin-top: 35px;
+            padding: 16px 50px;
+            font-size: 16px;
+            font-family: inherit;
+            color: #fff;
+            background: linear-gradient(135deg, #c53d43 0%, #a02c2c 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            letter-spacing: 4px;
+            box-shadow: 0 8px 25px rgba(197, 61, 67, 0.35);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blessing-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .blessing-btn:hover::before {
+            left: 100%;
+        }
+
+        .blessing-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(197, 61, 67, 0.45);
+        }
+
+        .blessing-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* 小标签 */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .tag {
+            padding: 8px 18px;
+            font-size: 13px;
+            color: #8b7355;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(139, 115, 85, 0.2);
+            border-radius: 20px;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background: rgba(197, 61, 67, 0.1);
+            border-color: rgba(197, 61, 67, 0.3);
+            color: #c53d43;
+        }
+
+        /* 底部信息 */
+        .footer {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #a08060;
+            letter-spacing: 4px;
+        }
+
+        /* ==================== 祝福弹窗 ==================== */
+        .blessing-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(92, 64, 51, 0.6);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .blessing-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .blessing-card {
+            background: linear-gradient(180deg, #f5ebe0 0%, #fae8d4 100%);
+            border: 2px solid rgba(197, 61, 67, 0.3);
+            border-radius: 20px;
+            padding: 50px 35px 40px;
+            text-align: center;
+            max-width: 380px;
+            margin: 20px;
+            transform: scale(0.8) translateY(30px);
+            transition: all 0.4s ease;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .blessing-modal.active .blessing-card {
+            transform: scale(1) translateY(0);
+        }
+
+        /* 彩蛋特效 */
+        .blessing-card.rainbow {
+            animation: rainbow-border 2s linear infinite;
+            border-width: 3px;
+        }
+
+        @keyframes rainbow-border {
+            0% { border-color: #c53d43; }
+            25% { border-color: #ffd700; }
+            50% { border-color: #c53d43; }
+            75% { border-color: #ffd700; }
+            100% { border-color: #c53d43; }
+        }
+
+        .blessing-card.rainbow::before {
+            content: '🎊 恭喜获得隐藏祝福 🎊';
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            color: #8b4513;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            animation: bounce-badge 1s ease infinite;
+        }
+
+        @keyframes bounce-badge {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        .blessing-emoji {
+            font-size: 55px;
+            margin-bottom: 20px;
+        }
+
+        .blessing-text {
+            font-size: clamp(17px, 4.5vw, 22px);
+            color: #5c4033;
+            line-height: 1.9;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+        }
+
+        .blessing-from {
+            font-size: 13px;
+            color: #a08060;
+            letter-spacing: 2px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(160, 128, 96, 0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            border-radius: 50%;
+            color: #8b7355;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: rgba(197, 61, 67, 0.1);
+            border-color: #c53d43;
+            color: #c53d43;
+            transform: rotate(90deg);
+        }
+
+        /* 彩蛋金光特效 */
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+            z-index: 150;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hospital-card {
+                padding: 20px 25px;
+                margin: 25px 15px;
+            }
+            .blessing-btn {
+                padding: 14px 40px;
+            }
+            .blessing-card {
+                padding: 45px 25px 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== 入场页面 ==================== -->
+    <div class="intro-page" id="introPage" onclick="enterMain()">
+        <div class="intro-coins" id="introCoins"></div>
+        
+        <div class="intro-content">
+            <div class="intro-top-text">HAPPY NEW YEAR</div>
+            <div class="intro-year">2026</div>
+            <div class="intro-happy">Happy<br>New Year</div>
+            <div class="intro-subtitle">新年伊始 · 悦赴新程</div>
+            <div class="intro-hospital">昆明市第一人民医院护理团队</div>
+        </div>
+        
+        <div class="intro-hint">👆 轻触屏幕 开启祝福</div>
+    </div>
+
+    <!-- ==================== 主页面 ==================== -->
+    <div class="main-page" id="mainPage">
+        <div class="bg-pattern"></div>
+        
+        <!-- 金币飘落 -->
+        <div class="coins-container" id="coinsContainer"></div>
+        
+        <!-- 烟花装饰 -->
+        <div class="firework-decor left"></div>
+        <div class="firework-decor right"></div>
+
+        <!-- 主内容 -->
+        <div class="main-content">
+            <div class="top-label">元旦启新岁</div>
+            
+            <div class="main-greeting">HAPPY NEW YEAR</div>
+            <div class="main-year">2026</div>
+            <div class="main-happy">Happy<br>New Year</div>
+            
+            <div class="chinese-blessing">元旦快乐</div>
+
+            <div class="hospital-card">
+                <div class="hospital-name">昆明市第一人民医院护理团队</div>
+                <div class="hospital-wish">祝您元旦快乐</div>
+            </div>
+
+            <button class="blessing-btn" onclick="showRandomBlessing()">
+                🎁 抽取新年祝福
+            </button>
+
+            <div class="tags">
+                <span class="tag">✨ 万事如意</span>
+                <span class="tag">🌟 阖家幸福</span>
+                <span class="tag">💫 身体健康</span>
+                <span class="tag">🎊 前程似锦</span>
+            </div>
+
+            <div class="footer">【 新岁序开 · 旦启新程 】</div>
+        </div>
+    </div>
+
+    <!-- ==================== 祝福弹窗 ==================== -->
+    <div class="blessing-modal" id="blessingModal" onclick="closeModal(event)">
+        <div class="blessing-card" id="blessingCard" onclick="event.stopPropagation()">
+            <div class="close-btn" onclick="closeBlessing()">×</div>
+            <div class="blessing-emoji" id="blessingEmoji">🎊</div>
+            <div class="blessing-text" id="blessingText">祝您新年快乐！</div>
+            <div class="blessing-from">—— 昆明市第一人民医院护理团队 ——</div>
+        </div>
+    </div>
+
+    <script>
+        // 普通祝福语列表
+        const normalBlessings = [
+            { emoji: '🎊', text: '愿新的一年，所有美好如约而至，所有遗憾都是惊喜的铺垫！' },
+            { emoji: '✨', text: '2026，愿您心想事成，万事胜意，前程似锦！' },
+            { emoji: '🌟', text: '新年新气象，愿您的生活充满阳光与希望！' },
+            { emoji: '💖', text: '愿您在新的一年里，身体健康，平安喜乐，幸福美满！' },
+            { emoji: '🎉', text: '2026，愿所有的努力都有回报，所有的期待都能实现！' },
+            { emoji: '🌈', text: '新的一年，愿您遇见更好的自己，拥抱更美的风景！' },
+            { emoji: '💫', text: '元旦快乐！愿您的2026，日日是好日，事事皆顺心！' },
+            { emoji: '🎁', text: '愿新年的钟声带给您无尽的祝福，幸福安康每一天！' },
+            { emoji: '🏮', text: '辞旧迎新，愿您在2026年大展宏图，鹏程万里！' },
+            { emoji: '💝', text: '愿这份来自护理团队的祝福，温暖您的整个2026！' },
+            { emoji: '🌸', text: '新年伊始，愿您的每一天都如花般绚烂，如诗般美好！' },
+            { emoji: '⭐', text: '2026，愿您成为自己的光，照亮前行的路！' },
+            { emoji: '🎀', text: '元旦快乐！愿您的生活甜甜蜜蜜，顺顺利利！' },
+            { emoji: '🌺', text: '愿新的一年，您的笑容比阳光更灿烂！' },
+            { emoji: '🎯', text: '2026，愿您目标达成，梦想成真，一切皆有可能！' }
+        ];
+
+        // 隐藏彩蛋祝福 (5%概率)
+        const hiddenBlessing = {
+            emoji: '🌟💖🌟',
+            text: '过去一年辛苦了，新的一年要更加努力，爱你老己，前程似锦',
+            isHidden: true
+        };
+
+        // 创建入场页金币
+        function createIntroCoins() {
+            const container = document.getElementById('introCoins');
+            for (let i = 0; i < 15; i++) {
+                const coin = document.createElement('div');
+                coin.className = 'intro-coin';
+                coin.textContent = '🪙';
+                coin.style.left = Math.random() * 100 + '%';
+                coin.style.animationDelay = Math.random() * 4 + 's';
+                coin.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                container.appendChild(coin);
+            }
+        }
+
+        // 进入主页面
+        function enterMain() {
+            document.getElementById('introPage').classList.add('hidden');
+            document.getElementById('mainPage').classList.add('visible');
+            createCoins();
+        }
+
+        // 创建金币
+        function createCoins() {
+            const container = document.getElementById('coinsContainer');
+            for (let i = 0; i < 12; i++) {
+                const coin = document.createElement('div');
+                coin.className = 'coin';
+                coin.style.left = Math.random() * 100 + '%';
+                coin.style.animationDelay = Math.random() * 6 + 's';
+                coin.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                coin.style.width = (Math.random() * 15 + 20) + 'px';
+                coin.style.height = coin.style.width;
+                container.appendChild(coin);
+            }
+        }
+
+        // 显示随机祝福
+        function showRandomBlessing() {
+            let blessing;
+            let isHiddenBlessing = false;
+            
+            // 5% 概率抽中隐藏祝福
+            if (Math.random() < 0.05) {
+                blessing = hiddenBlessing;
+                isHiddenBlessing = true;
+            } else {
+                blessing = normalBlessings[Math.floor(Math.random() * normalBlessings.length)];
+            }
+            
+            const card = document.getElementById('blessingCard');
+            document.getElementById('blessingEmoji').textContent = blessing.emoji;
+            document.getElementById('blessingText').textContent = blessing.text;
+            
+            // 彩蛋特效
+            if (isHiddenBlessing) {
+                card.classList.add('rainbow');
+                createConfetti();
+            } else {
+                card.classList.remove('rainbow');
+            }
+            
+            document.getElementById('blessingModal').classList.add('active');
+        }
+
+        // 创建彩蛋金光特效
+        function createConfetti() {
+            const colors = ['#ffd700', '#ff6b6b', '#c53d43', '#ffed4a', '#ff8c00'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-10px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                confetti.style.zIndex = '200';
+                
+                document.body.appendChild(confetti);
+                
+                // 动画
+                const animation = confetti.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                    { transform: `translateY(100vh) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+                ], {
+                    duration: Math.random() * 2000 + 2000,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                });
+                
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+
+        // 关闭祝福
+        function closeBlessing() {
+            document.getElementById('blessingModal').classList.remove('active');
+        }
+
+        // 点击背景关闭
+        function closeModal(event) {
+            if (event.target === document.getElementById('blessingModal')) {
+                closeBlessing();
+            }
+        }
+
+        // 初始化
+        createIntroCoins();
+    </script>
+</body>
+</html>
