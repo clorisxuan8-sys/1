@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>元旦快乐</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #ffcccc, #ffcc99);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+        }
+        #greeting {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            animation: fadeIn 2s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fireworks {
+            position: fixed;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="greeting"></div>
+    <video autoplay loop muted class="fireworks">
+        <source src="fireworks.mp4" type="video/mp4">
+    </video>
+
+    <script>
+        const greetings = [
+            "元旦快乐！祝您新年快乐，万事如意！",
+            "愿新的一年带给你幸福和成功！",
+            "祝您在新的一年里心想事成，事事顺心！"
+        ];
+
+        function displayGreeting() {
+            const greetingElement = document.getElementById('greeting');
+            greetingElement.textContent = greetings[Math.floor(Math.random() * greetings.length)];
+            greetingElement.style.animation = 'none'; // Reset animation
+            setTimeout(() => {
+                greetingElement.style.animation = '';
+            }, 10);
+        }
+
+        displayGreeting();
+        setInterval(displayGreeting, 5000); // 每5秒换一次祝福
+    </script>
+</body>
+</html>
