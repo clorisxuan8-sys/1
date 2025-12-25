@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026·新岁诗意</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* --- 全局与字体 --- */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;500;700&display=swap');
+
+        :root {
+            --palace-red: #A82828;
+            --imperial-gold: #C69C6D;
+            --snow-white: #F7F7F7;
+            --ink-black: #2C2C2C;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Serif SC', 'Songti SC', serif;
+            overflow: hidden;
+            background-color: var(--palace-red);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--ink-black);
+        }
+
+        /* --- 背景层 --- */
+        #bg-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background-image 2s ease-in-out;
+            filter: brightness(0.85);
+        }
+
+        #snow-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- 主容器 --- */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        /* --- 场景通用样式 --- */
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            opacity: 0;
+            pointer-events: none; /* 隐藏时不响应点击 */
+            transform: scale(0.95);
+        }
+
+        .scene.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+        }
+
+        /* --- 场景1：开场 --- */
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--snow-white);
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            letter-spacing: 0.2em;
+        }
+
+        .sub-title {
+            font-size: 1.2rem;
+            color: var(--snow-white);
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+            letter-spacing: 0.5em;
+            border-top: 1px solid var(--imperial-gold);
+            border-bottom: 1px solid var(--imperial-gold);
+            padding: 10px 0;
+        }
+
+        .btn-start {
+            background: rgba(168, 40, 40, 0.6);
+            border: 1px solid var(--imperial-gold);
+            color: var(--imperial-gold);
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            font-family: 'Noto Serif SC', serif;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(198, 156, 109, 0.3);
+        }
+
+        .btn-start:hover {
+            background: var(--imperial-gold);
+            color: var(--palace-red);
+            box-shadow: 0 0 25px rgba(198, 156, 109, 0.8);
+        }
+
+        /* --- 场景2：抽取界面 (新增) --- */
+        .draw-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .draw-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 2px solid var(--imperial-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            transition: all 0.5s ease;
+            box-shadow: 0 0 30px rgba(198, 156, 109, 0.2);
+        }
+
+        .draw-circle:hover {
+            transform: scale(1.05);
+            background: rgba(198, 156, 109, 0.2);
+            box-shadow: 0 0 50px rgba(198, 156, 109, 0.5);
+        }
+
+        .draw-text {
+            color: var(--snow-white);
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            writing-mode: vertical-rl; /* 竖排文字 */
+            text-orientation: upright;
+            font-weight: bold;
+        }
+
+        /* 呼吸动画环 */
+        .ring {
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border: 1px dashed var(--imperial-gold);
+            border-radius: 50%;
+            animation: spin 10s linear infinite;
+            opacity: 0.6;
+        }
+
+        .draw-hint {
+            margin-top: 40px;
+            color: var(--snow-white);
+            font-size: 1rem;
+            opacity: 0.8;
+            letter-spacing: 0.1em;
+        }
+
+        /* 抽取时的加载状态 */
+        .loading-text {
+            display: none;
+            color: var(--imperial-gold);
+            font-size: 1.2rem;
+            margin-top: 20px;
+            letter-spacing: 0.2em;
+            animation: pulse 1s infinite;
+        }
+
+        /* --- 场景3：结果展示 --- */
+        .poetry-card {
+            background: var(--glass-bg);
+            width: 420px;
+            padding: 50px 40px;
+            border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            text-align: center;
+            position: relative;
+            border: 1px solid #e0e0e0;
+            background-image: linear-gradient(to right, transparent 50%, rgba(198, 156, 109, 0.1) 50%);
+            background-size: 100% 100%;
+            /* 初始状态由JS控制进入动画 */
+        }
+
+        .corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--imperial-gold);
+        }
+        .tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+        .bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+        .br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+        .card-year {
+            font-size: 0.9rem;
+            color: var(--palace-red);
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            margin-bottom: 30px;
+            font-family: Arial, sans-serif;
+        }
+
+        .poem-text {
+            font-size: 1.6rem;
+            line-height: 1.6;
+            color: #000;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .poem-source {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .divider {
+            width: 40px;
+            height: 2px;
+            background: var(--palace-red);
+            margin: 0 auto 30px auto;
+        }
+
+        .poem-desc {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #444;
+            text-align: justify;
+            text-align-last: center;
+        }
+
+        .stamp {
+            margin-top: 30px;
+            width: 30px;
+            height: 30px;
+            background: var(--palace-red);
+            color: white;
+            font-size: 12px;
+            line-height: 30px;
+            border-radius: 4px;
+            display: inline-block;
+            font-weight: bold;
+            opacity: 0.8;
+        }
+
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-action {
+            background: transparent;
+            border: 1px solid var(--snow-white);
+            color: var(--snow-white);
+            padding: 10px 25px;
+            cursor: pointer;
+            border-radius: 30px;
+            font-family: 'Noto Serif SC';
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            backdrop-filter: blur(2px);
+        }
+
+        .btn-action:hover {
+            background: var(--imperial-gold);
+            border-color: var(--imperial-gold);
+            color: var(--palace-red);
+        }
+
+        /* 动画关键帧 */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* 移动端适配 */
+        @media (max-width: 600px) {
+            .main-title { font-size: 2.2rem; }
+            .poetry-card { width: 90%; padding: 30px 20px; }
+            .poem-text { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-container"></div>
+    <canvas id="snow-canvas"></canvas>
+
+    <div class="container">
+        
+        <div class="scene active" id="scene-intro">
+            <div class="main-title">二零二六</div>
+            <div class="sub-title">用诗意开启你的开场白</div>
+            <br>
+            <button class="btn-start" onclick="goToDraw()">开启新岁</button>
+        </div>
+
+        <div class="scene" id="scene-draw">
+            <div class="draw-container">
+                <div class="draw-circle" id="drawBtn" onclick="performDraw()">
+                    <div class="ring"></div>
+                    <div class="draw-text">开启签文</div>
+                </div>
+                <div class="draw-hint" id="drawHint">点击抽取你的新年寄语</div>
+                <div class="loading-text" id="loadingText">正在雪中寻觅...</div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-result">
+            <div class="poetry-card" id="captureTarget">
+                <div class="corner tl"></div><div class="corner tr"></div>
+                <div class="corner bl"></div><div class="corner br"></div>
+                
+                <div class="card-year">2026 NEW YEAR</div>
+                
+                <div class="poem-text" id="pText"></div>
+                <div class="poem-source" id="pSource"></div>
+                
+                <div class="divider"></div>
+                
+                <div class="poem-desc" id="pDesc"></div>
+                
+                <div class="stamp">福</div>
+            </div>
+
+            <div class="actions">
+                <button class="btn-action" onclick="downloadCard()">保存卡片</button>
+                <button class="btn-action" onclick="resetToDraw()">再抽一次</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 数据配置 (基于用户提供的文档) ---
+        const poems = [
+            {
+                text: "老去又逢新岁月<br>春来更有好花枝",
+                source: "明·陈献章《元旦试笔》",
+                desc: "生命本就是流动的。不要惧怕时间的流逝，它不仅带来年龄，更带来了新的岁月与可能。请自信、坚定地迎接更美好的未来。"
+            },
+            {
+                text: "但得老亲常健好<br>不辞新岁且穷忙",
+                source: "宋·吕本中《得扬州书》",
+                desc: "只要父母长辈身体安康，即使新的一年忙碌奔波也心甘情愿。家是温暖的港湾，父母在，人生便有归处。"
+            },
+            {
+                text: "韶华长在，明年依旧<br>相与笑春风",
+                source: "宋·张先《少年游》",
+                desc: "岁月流转，花儿依然准时开放。这是一种永恒的约定：时光不老，我们不散。愿往后每一年，都能在春风中把酒言欢。"
+            },
+            {
+                text: "一年忧喜今宵过<br>两鬓风霜明日新",
+                source: "明·谢榛《除夕吴子充诸人集旅寓有感》",
+                desc: "学会“翻篇”的能力。旧年的忧喜今晚便成过往，明日又是崭新的一天。无论情绪仍在与否，我们要有能力过好当下的日子。"
+            },
+            {
+                text: "更祝明朝风日好<br>梅花满眼踏新年",
+                source: "明·吴与弼《除夜次唐诗韵》",
+                desc: "衷心祝愿明天风和日丽，满眼皆是盛开的梅花。让我们怀着洒然自得的心情，踏着这美好的景致，迈入新的一年。"
+            },
+            {
+                text: "历添新岁月<br>春满旧山河",
+                source: "宋·叶梦得",
+                desc: "山河熟悉安稳，却因春意而焕然一新。人生不是推倒重来，而是在既有的努力与沉淀之上，继续向前，迎来万物复苏。"
+            },
+            {
+                text: "但愿年年<br>春风有信，人心长久",
+                source: "宋·蔡伸《柳梢青》",
+                desc: "不求惊天动地，只愿岁月缓慢向前，所盼皆有回应。愿春风如约而至，愿人与人之间多一份笃定与陪伴，长久而安。"
+            },
+            {
+                text: "岁岁年年，共欢同乐<br>嘉庆于时新",
+                source: "宋·晏殊《少年游》",
+                desc: "真正的喜悦是有人同行、有人分享。愿好运就在当下悄然发生，愿每一个当下都值得庆贺，岁岁安然。"
+            },
+            {
+                text: "愿得长如此<br>年年物候新",
+                source: "唐·卢照邻《元日述怀》",
+                desc: "这是一种克制而深情的祈愿。不求瞬间的惊艳，只愿当下的安稳与从容能够延续。时光向前，万物常新，日日皆有风景。"
+            },
+            {
+                text: "休将旧事从头说<br>且喜新年入手来",
+                source: "宋词人",
+                desc: "真正的成熟是承认过去、然后放下。新年已如礼物般握在掌中，愿你轻装前行，把热情与勇气留给正在到来的时光。"
+            }
+        ];
+
+        // --- 场景管理逻辑 ---
+        function switchScene(fromId, toId) {
+            const fromScene = document.getElementById(fromId);
+            const toScene = document.getElementById(toId);
+            
+            fromScene.classList.remove('active');
+            setTimeout(() => {
+                toScene.classList.add('active');
+            }, 800); // 等待淡出动画完成
+        }
+
+        // 1. 首页 -> 抽取页
+        function goToDraw() {
+            switchScene('scene-intro', 'scene-draw');
+        }
+
+        // 2. 执行抽取逻辑（仪式感核心）
+        let isDrawing = false;
+        function performDraw() {
+            if (isDrawing) return;
+            isDrawing = true;
+
+            const drawBtn = document.getElementById('drawBtn');
+            const hint = document.getElementById('drawHint');
+            const loading = document.getElementById('loadingText');
+
+            // 动画状态：按钮旋转变快，文字变化
+            drawBtn.style.transform = 'scale(0.9) rotate(180deg)';
+            drawBtn.style.opacity = '0.5';
+            hint.style.opacity = '0';
+            loading.style.display = 'block';
+
+            // 模拟抽签的等待时间 (1.5秒)
+            setTimeout(() => {
+                // 准备数据
+                const randomIndex = Math.floor(Math.random() * poems.length);
+                const data = poems[randomIndex];
+                
+                document.getElementById('pText').innerHTML = data.text;
+                document.getElementById('pSource').innerText = data.source;
+                document.getElementById('pDesc').innerText = data.desc;
+
+                // 切换到结果页
+                switchScene('scene-draw', 'scene-result');
+                
+                // 重置抽取页状态（为了下一次）
+                setTimeout(() => {
+                    isDrawing = false;
+                    drawBtn.style.transform = 'scale(1) rotate(0deg)';
+                    drawBtn.style.opacity = '1';
+                    hint.style.opacity = '0.8';
+                    loading.style.display = 'none';
+                }, 1000);
+
+            }, 1500);
+        }
+
+        // 3. 结果页 -> 抽取页 (再抽一次)
+        function resetToDraw() {
+            switchScene('scene-result', 'scene-draw');
+        }
+
+        // --- 核心功能：下载卡片 ---
+        function downloadCard() {
+            const element = document.getElementById('captureTarget');
+            const originalTransform = element.style.transform;
+            element.style.transform = "none"; 
+            
+            html2canvas(element, {
+                backgroundColor: null,
+                scale: 2
+            }).then(canvas => {
+                element.style.transform = originalTransform;
+                const link = document.createElement('a');
+                link.download = '2026新年签.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        // --- 视觉效果：背景与粒子 ---
+        const bgImages = ['故宫.jpg', '故宫2.jpg', '故宫3.jpg'];
+        let currentBgIndex = 0;
+        const bgContainer = document.getElementById('bg-container');
+
+        function initBackground() {
+            const img = new Image();
+            img.onload = () => {
+                 bgContainer.style.backgroundImage = `url('${bgImages[0]}')`;
+                 setInterval(() => {
+                    currentBgIndex = (currentBgIndex + 1) % bgImages.length;
+                    bgContainer.style.backgroundImage = `url('${bgImages[currentBgIndex]}')`;
+                }, 6000);
+            };
+            img.onerror = () => {
+                bgContainer.style.background = "linear-gradient(45deg, #8B0000, #C69C6D)";
+            };
+            img.src = bgImages[0];
+        }
+
+        function initSnow() {
+            const canvas = document.getElementById('snow-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            const particleCount = 1500;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = new Float32Array(particleCount);
+
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 20;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+                velocities[i] = 0.02 + Math.random() * 0.05;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            function getSprite() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 32; canvas.height = 32;
+                const context = canvas.getContext('2d');
+                const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
+                gradient.addColorStop(0, 'rgba(255,255,255,1)');
+                gradient.addColorStop(0.5, 'rgba(255,255,255,0.3)');
+                gradient.addColorStop(1, 'rgba(0,0,0,0)');
+                context.fillStyle = gradient;
+                context.fillRect(0, 0, 32, 32);
+                return new THREE.CanvasTexture(canvas);
+            }
+
+            const material = new THREE.PointsMaterial({
+                size: 0.15, map: getSprite(), transparent: true, opacity: 0.8,
+                depthWrite: false, blending: THREE.AdditiveBlending
+            });
+
+            const particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+            camera.position.z = 5;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                const positions = particles.geometry.attributes.position.array;
+                for (let i = 0; i < particleCount; i++) {
+                    positions[i * 3 + 1] -= velocities[i];
+                    positions[i * 3] += Math.sin(Date.now() * 0.001 + positions[i * 3 + 1]) * 0.002;
+                    if (positions[i * 3 + 1] < -10) {
+                        positions[i * 3 + 1] = 10;
+                        positions[i * 3] = (Math.random() - 0.5) * 20;
+                    }
+                }
+                particles.geometry.attributes.position.needsUpdate = true;
+                particles.rotation.y += 0.0005;
+                renderer.render(scene, camera);
+            }
+            animate();
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        window.onload = () => {
+            initBackground();
+            initSnow();
+        };
+    </script>
+</body>
+</html>
