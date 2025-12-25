@@ -4,470 +4,499 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老己的2025年年终总结</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            font-family: 'Noto Serif SC', 'PingFang SC', serif;
             overflow-x: hidden;
+            background: #fffdf9;
         }
 
         /* ============ 开场页面 ============ */
         .intro-page {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #fff5f5 0%, #ffe4ec 50%, #ffd6e0 100%);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, #fefefe 0%, #fff9f5 40%, #fff5f0 70%, #ffede8 100%);
             z-index: 1000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: opacity 1s ease, visibility 1s ease;
+            transition: opacity 1.2s ease, visibility 1.2s ease;
+            overflow: hidden;
         }
-
         .intro-page.hidden {
             opacity: 0;
             visibility: hidden;
+            pointer-events: none;
         }
 
-        .intro-content {
-            text-align: center;
-            padding: 40px;
-            animation: fadeInUp 1.5s ease;
+        /* 底部花草背景图 */
+        .flora-background {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 45%;
+            background-image: url('https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/2cc005764fc23162ea34703f720d898f.png');
+            background-size: cover;
+            background-position: center bottom;
+            background-repeat: no-repeat;
+            opacity: 0.9;
+            z-index: 1;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* 花草图上方的渐变遮罩，让过渡更自然 */
+        .flora-gradient {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(180deg, 
+                rgba(255,249,245,1) 0%, 
+                rgba(255,249,245,0.6) 30%, 
+                rgba(255,249,245,0) 60%);
+            z-index: 2;
+            pointer-events: none;
         }
 
-        .intro-title {
-            font-size: 2.5rem;
-            color: #d4627a;
-            margin-bottom: 40px;
-            text-shadow: 2px 2px 4px rgba(212, 98, 122, 0.2);
-        }
-
-        .intro-poem {
-            font-size: 1.3rem;
-            color: #8b5a6a;
-            line-height: 2.5;
-            margin-bottom: 50px;
-            font-style: italic;
-        }
-
-        .intro-poem p {
-            margin: 10px 0;
-            animation: fadeIn 1s ease forwards;
-            opacity: 0;
-        }
-
-        .intro-poem p:nth-child(1) { animation-delay: 0.5s; }
-        .intro-poem p:nth-child(2) { animation-delay: 1s; }
-        .intro-poem p:nth-child(3) { animation-delay: 1.5s; }
-        .intro-poem p:nth-child(4) { animation-delay: 2s; }
-        .intro-poem p:nth-child(5) { animation-delay: 2.5s; }
-        .intro-poem p:nth-child(6) { animation-delay: 3s; }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
-        .enter-btn {
-            padding: 15px 50px;
-            font-size: 1.2rem;
-            background: linear-gradient(135deg, #f8a5b8 0%, #f0778a 100%);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 8px 25px rgba(240, 119, 138, 0.4);
-            transition: all 0.3s ease;
-            animation: pulse 2s infinite;
-        }
-
-        .enter-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(240, 119, 138, 0.5);
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        /* 樱花飘落 */
+        /* 樱花花瓣 */
         .sakura {
             position: absolute;
-            width: 15px;
-            height: 15px;
-            background: linear-gradient(135deg, #ffb7c5 0%, #ff91a4 100%);
+            background: linear-gradient(135deg, #ffd6e0 0%, #ffb6c1 40%, #ffa0aa 100%);
             border-radius: 50% 0 50% 50%;
-            opacity: 0.8;
-            animation: fall linear infinite;
+            box-shadow: 0 2px 10px rgba(255, 182, 193, 0.3);
+            animation: petalFall linear infinite;
+            pointer-events: none;
+            z-index: 10;
         }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(-100px) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0.3;
-            }
+        @keyframes petalFall {
+            0% { transform: translateY(-60px) rotate(0deg) translateX(0); opacity: 0; }
+            5% { opacity: 0.9; }
+            50% { transform: translateY(50vh) rotate(360deg) translateX(80px); }
+            85% { opacity: 0.7; }
+            100% { transform: translateY(105vh) rotate(720deg) translateX(-30px); opacity: 0; }
         }
 
         /* 蝴蝶 */
         .butterfly {
             position: absolute;
-            font-size: 2rem;
-            animation: flutter 8s ease-in-out infinite;
-            opacity: 0.7;
+            font-size: 1.6rem;
+            opacity: 0.8;
+            animation: butterflyDance 15s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
+            z-index: 15;
+        }
+        @keyframes butterflyDance {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(60px, -30px) rotate(10deg); }
+            50% { transform: translate(30px, 40px) rotate(-8deg); }
+            75% { transform: translate(-50px, -20px) rotate(15deg); }
         }
 
-        @keyframes flutter {
-            0%, 100% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-            25% {
-                transform: translate(100px, -50px) rotate(10deg);
-            }
-            50% {
-                transform: translate(50px, 50px) rotate(-5deg);
-            }
-            75% {
-                transform: translate(-50px, -30px) rotate(15deg);
-            }
+        /* 开头语 */
+        .intro-content {
+            text-align: center;
+            padding: 40px 35px;
+            z-index: 20;
+            max-width: 550px;
         }
+        .intro-poem {
+            font-size: 1.3rem;
+            color: #5a4a45;
+            line-height: 2.6;
+            letter-spacing: 2px;
+            margin-bottom: 50px;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+        }
+        .intro-poem .line {
+            display: block;
+            opacity: 0;
+            transform: translateY(25px);
+            animation: lineReveal 0.9s ease forwards;
+        }
+        .intro-poem .line:nth-child(1) { animation-delay: 0.4s; }
+        .intro-poem .line:nth-child(2) { animation-delay: 0.9s; }
+        .intro-poem .line:nth-child(3) { animation-delay: 1.4s; }
+        .intro-poem .line:nth-child(4) { animation-delay: 1.9s; }
+        .intro-poem .line:nth-child(5) { animation-delay: 2.4s; }
+        .intro-poem .line:nth-child(6) { animation-delay: 2.9s; }
+        @keyframes lineReveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .intro-poem .highlight {
+            color: #e07a88;
+            font-weight: 600;
+        }
+        .enter-btn {
+            padding: 16px 50px;
+            font-size: 1.1rem;
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #ffe8d6 0%, #f8b595 100%);
+            color: #6b4a40;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 35px rgba(248, 181, 149, 0.45);
+            transition: all 0.4s ease;
+            letter-spacing: 3px;
+            opacity: 0;
+            animation: btnFadeIn 0.8s ease 3.4s forwards;
+            position: relative;
+            z-index: 20;
+        }
+        .enter-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 45px rgba(248, 181, 149, 0.55);
+        }
+        @keyframes btnFadeIn { to { opacity: 1; } }
 
         /* ============ 主页面 ============ */
         .main-page {
             min-height: 100vh;
-            background: linear-gradient(180deg, #fff9f9 0%, #fff0f3 100%);
-            padding: 30px 20px;
+            background: linear-gradient(180deg, #fffdf9 0%, #fff8f2 50%, #fff3ec 100%);
+            padding: 50px 20px 80px;
+            position: relative;
         }
-
-        .main-title {
-            text-align: center;
-            font-size: 2.2rem;
-            color: #d4627a;
-            margin-bottom: 40px;
-            text-shadow: 2px 2px 4px rgba(212, 98, 122, 0.15);
+        .page-deco {
+            position: absolute;
+            font-size: 1.3rem;
+            opacity: 0.5;
+            animation: gentleFloat 6s ease-in-out infinite;
+            pointer-events: none;
         }
-
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(8deg); }
+        }
+        .page-header { text-align: center; margin-bottom: 50px; }
+        .page-title {
+            font-size: 1.7rem;
+            color: #6b5a52;
+            letter-spacing: 5px;
+            font-weight: 400;
+            margin-bottom: 12px;
+        }
+        .page-subtitle {
+            font-size: 0.95rem;
+            color: #a89890;
+            letter-spacing: 3px;
+        }
         .sections-container {
-            max-width: 1200px;
+            max-width: 950px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            padding: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            padding: 0 15px;
         }
-
-        .section {
-            background: white;
-            border-radius: 25px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(212, 98, 122, 0.1);
+        @media (max-width: 850px) {
+            .sections-container {
+                grid-template-columns: 1fr;
+                max-width: 380px;
+            }
+        }
+        .section-card {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 24px;
+            padding: 38px 28px;
             text-align: center;
-            transition: transform 0.3s ease;
+            box-shadow: 0 8px 32px rgba(180, 160, 145, 0.1);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 230, 220, 0.5);
+            position: relative;
         }
-
-        .section:hover {
-            transform: translateY(-5px);
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffd1dc, #ffe4c9, #d4f0d4);
+            border-radius: 24px 24px 0 0;
         }
-
-        .section-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+        .section-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(180, 160, 145, 0.18);
         }
-
+        .section-icon { font-size: 3.2rem; margin-bottom: 20px; display: block; }
         .section-title {
-            font-size: 1.5rem;
-            color: #d4627a;
-            margin-bottom: 15px;
+            font-size: 1.3rem;
+            color: #6b5a52;
+            margin-bottom: 14px;
+            font-weight: 400;
+            letter-spacing: 2px;
         }
-
         .section-desc {
-            color: #999;
-            font-size: 0.95rem;
-            margin-bottom: 25px;
+            color: #a89890;
+            font-size: 0.92rem;
+            margin-bottom: 28px;
+            line-height: 1.9;
+        }
+        .draw-btn {
+            padding: 13px 38px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #ffe8d6 0%, #f8b595 100%);
+            color: #6b4a40;
+            border: none;
+            border-radius: 28px;
+            cursor: pointer;
+            transition: all 0.35s ease;
+            letter-spacing: 2px;
+            box-shadow: 0 6px 22px rgba(248, 181, 149, 0.35);
+        }
+        .draw-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 10px 30px rgba(248, 181, 149, 0.5);
+        }
+        .disclaimer {
+            background: linear-gradient(135deg, #fff8f5 0%, #fff2ec 100%);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-top: 22px;
+            font-size: 0.78rem;
+            color: #c49a8a;
+            text-align: left;
+            border-left: 3px solid #f8c0a8;
             line-height: 1.6;
         }
-
-        .draw-btn {
-            padding: 12px 40px;
-            font-size: 1.1rem;
-            background: linear-gradient(135deg, #ffb6c1 0%, #ff91a4 100%);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(255, 145, 164, 0.4);
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 50px;
+            color: #b5a598;
+            font-size: 0.9rem;
+            text-decoration: none;
+            letter-spacing: 2px;
         }
-
-        .draw-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(255, 145, 164, 0.5);
-        }
-
-        .disclaimer {
-            background: #fff5f5;
-            border-left: 4px solid #ffb6c1;
-            padding: 10px 15px;
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: #c97a84;
-            border-radius: 0 10px 10px 0;
-            text-align: left;
-        }
+        .back-home:hover { color: #8b7a70; }
 
         /* ============ 祝福卡片弹窗 ============ */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(50, 45, 40, 0.65);
+            backdrop-filter: blur(10px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 2000;
-            padding: 20px;
+            padding: 25px;
         }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
+        .modal-overlay.active { display: flex; }
         .blessing-card {
             position: relative;
-            width: 100%;
-            max-width: 380px;
-            min-height: 500px;
-            border-radius: 25px;
+            width: 330px;
+            min-height: 450px;
+            border-radius: 28px;
             overflow: hidden;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
-            animation: cardAppear 0.6s ease;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+            animation: cardBounceIn 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: #fffcf9;
         }
-
-        @keyframes cardAppear {
-            from {
-                opacity: 0;
-                transform: scale(0.8) rotateY(90deg);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) rotateY(0deg);
-            }
+        @keyframes cardBounceIn {
+            0% { opacity: 0; transform: scale(0.4) rotate(-8deg) translateY(50px); }
+            60% { transform: scale(1.05) rotate(2deg) translateY(-10px); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
         }
-
-        .card-background {
+        .card-deco-border {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 2px dashed rgba(248, 181, 149, 0.5);
+            border-radius: 22px;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .card-corner {
+            position: absolute;
+            font-size: 1.3rem;
+            opacity: 0.6;
+            z-index: 6;
+        }
+        .card-corner.tl { top: 16px; left: 16px; }
+        .card-corner.tr { top: 16px; right: 16px; transform: scaleX(-1); }
+        .card-corner.bl { bottom: 16px; left: 16px; transform: scaleY(-1); }
+        .card-corner.br { bottom: 16px; right: 16px; transform: scale(-1); }
+        .card-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
+            opacity: 0.32;
         }
-
         .card-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: linear-gradient(180deg, 
-                rgba(255,255,255,0.1) 0%, 
-                rgba(255,255,255,0.85) 60%, 
-                rgba(255,255,255,0.95) 100%);
+                rgba(255,252,249,0.25) 0%, 
+                rgba(255,252,249,0.65) 35%, 
+                rgba(255,252,249,0.92) 100%);
         }
-
-        .card-content {
+        .card-inner {
             position: relative;
             z-index: 10;
-            padding: 40px 30px;
-            height: 100%;
+            padding: 55px 30px 35px;
+            min-height: 450px;
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
         }
-
-        .card-category {
-            font-size: 0.9rem;
-            color: #f0778a;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
+        .card-tag {
+            display: inline-block;
+            padding: 7px 20px;
+            background: linear-gradient(135deg, #ffe8d6 0%, #f8b595 100%);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #6b4a40;
+            margin-bottom: 28px;
+            align-self: flex-start;
+            letter-spacing: 1px;
         }
-
         .card-text {
-            font-size: 1.25rem;
-            color: #5a4a4a;
-            line-height: 2;
-            margin-bottom: 30px;
+            flex: 1;
+            font-size: 1.1rem;
+            color: #4a4040;
+            line-height: 2.3;
             text-align: left;
-            font-weight: 500;
+            letter-spacing: 1px;
         }
-
-        .card-footer {
+        .card-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-top: 30px;
+            padding-top: 22px;
+            border-top: 1px dashed rgba(200, 180, 165, 0.45);
         }
-
-        .card-signature {
-            font-size: 0.9rem;
-            color: #c9a0a0;
+        .card-sign {
+            font-size: 0.82rem;
+            color: #b5a598;
+            letter-spacing: 2px;
             font-style: italic;
         }
-
-        .card-close {
-            width: 45px;
-            height: 45px;
+        .card-btns { display: flex; gap: 12px; }
+        .card-btn {
+            width: 44px; height: 44px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #f8a5b8 0%, #f0778a 100%);
             border: none;
-            color: white;
-            font-size: 1.5rem;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(240, 119, 138, 0.4);
-            transition: transform 0.3s ease;
+            font-size: 1.15rem;
+            transition: all 0.35s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-
-        .card-close:hover {
-            transform: rotate(90deg);
+        .btn-redraw {
+            background: linear-gradient(135deg, #ffe8d6 0%, #f8b595 100%);
+            color: #6b4a40;
+            box-shadow: 0 5px 18px rgba(248, 181, 149, 0.4);
         }
-
-        .redraw-btn {
-            margin-top: 20px;
-            padding: 10px 25px;
-            background: transparent;
-            border: 2px solid #f0778a;
-            color: #f0778a;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
+        .btn-redraw:hover { transform: rotate(180deg) scale(1.1); }
+        .btn-close {
+            background: rgba(255, 255, 255, 0.95);
+            color: #a89890;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
-
-        .redraw-btn:hover {
-            background: #f0778a;
-            color: white;
-        }
-
-        /* 响应式 */
-        @media (max-width: 768px) {
-            .intro-title {
-                font-size: 1.8rem;
-            }
-            .intro-poem {
-                font-size: 1.1rem;
-            }
-            .main-title {
-                font-size: 1.8rem;
-            }
-            .section {
-                padding: 25px 20px;
-            }
-            .blessing-card {
-                min-height: 450px;
-            }
-        }
+        .btn-close:hover { background: #fff; color: #6b5a52; transform: scale(1.1); }
     </style>
 </head>
 <body>
     <!-- 开场页面 -->
     <div class="intro-page" id="introPage">
-        <!-- 樱花将通过JS生成 -->
-        <!-- 蝴蝶 -->
-        <div class="butterfly" style="top: 20%; left: 10%;">🦋</div>
-        <div class="butterfly" style="top: 30%; right: 15%; animation-delay: -2s;">🦋</div>
-        <div class="butterfly" style="top: 60%; left: 20%; animation-delay: -4s;">🦋</div>
-        <div class="butterfly" style="top: 70%; right: 10%; animation-delay: -6s;">🦋</div>
+        <!-- 底部花草背景图 -->
+        <div class="flora-background"></div>
+        <div class="flora-gradient"></div>
 
+        <!-- 蝴蝶 -->
+        <div class="butterfly" style="top: 12%; left: 8%;">🦋</div>
+        <div class="butterfly" style="top: 20%; right: 12%; animation-delay: -4s;">🦋</div>
+        <div class="butterfly" style="top: 40%; left: 5%; animation-delay: -8s; font-size: 1.8rem;">🦋</div>
+        <div class="butterfly" style="top: 35%; right: 8%; animation-delay: -12s;">🦋</div>
+
+        <!-- 开头语 -->
         <div class="intro-content">
-            <h1 class="intro-title">🌸 老己的2025年年终总结 🌸</h1>
             <div class="intro-poem">
-                <p>本以为人间行色匆匆，</p>
-                <p>无人在意云起云落、花开花谢</p>
-                <p>偏偏遇到了一群可爱的人</p>
-                <p>与我春观花、夏赏荷、秋品诗、冬吃鱼</p>
-                <p>历经日落月升、山河远阔</p>
-                <p>皆有福气 💕</p>
+                <span class="line">春生夏长，秋收冬藏。</span>
+                <span class="line">一年倏忽行至尾声。</span>
+                <span class="line">我们站在时间交界处，</span>
+                <span class="line">回望来路并不平坦，</span>
+                <span class="line">但此行值得。</span>
+                <span class="line">现在，诚邀您抽取一份属于<span class="highlight">"老己"</span>的2025年总结。</span>
             </div>
-            <button class="enter-btn" onclick="enterMain()">✨ 开启我的祝福 ✨</button>
+            <button class="enter-btn" onclick="enterMain()">✿ 开启祝福 ✿</button>
         </div>
     </div>
 
     <!-- 主页面 -->
-    <div class="main-page" id="mainPage">
-        <h1 class="main-title">🎐 选择你想要的祝福类型 🎐</h1>
-        
+    <div class="main-page">
+        <div class="page-deco" style="top: 8%; left: 4%;">🌸</div>
+        <div class="page-deco" style="top: 15%; right: 6%; animation-delay: -2s;">🍃</div>
+        <div class="page-deco" style="top: 55%; left: 3%; animation-delay: -4s;">🌷</div>
+        <div class="page-deco" style="top: 65%; right: 4%; animation-delay: -1s;">🦋</div>
+
+        <div class="page-header">
+            <h1 class="page-title">~ 选择您的祝福 ~</h1>
+            <p class="page-subtitle">每一份祝福都是独特的相遇</p>
+        </div>
+
         <div class="sections-container">
-            <!-- 文艺版块 -->
-            <div class="section">
-                <div class="section-icon">📜</div>
+            <div class="section-card">
+                <span class="section-icon">📜</span>
                 <h2 class="section-title">文艺版块</h2>
-                <p class="section-desc">诗意温柔的祝福<br>像春风拂过心间</p>
+                <p class="section-desc">诗意栖居<br>岁月温柔</p>
                 <button class="draw-btn" onclick="drawBlessing('literary')">抽取祝福</button>
             </div>
 
-            <!-- 平淡温馨版块 -->
-            <div class="section">
-                <div class="section-icon">🏠</div>
+            <div class="section-card">
+                <span class="section-icon">🏠</span>
                 <h2 class="section-title">平淡温馨版块</h2>
-                <p class="section-desc">简单真挚的祝福<br>如家的温暖怀抱</p>
+                <p class="section-desc">细水长流<br>人间烟火</p>
                 <button class="draw-btn" onclick="drawBlessing('warm')">抽取祝福</button>
             </div>
 
-            <!-- 搞笑版块 -->
-            <div class="section">
-                <div class="section-icon">😂</div>
+            <div class="section-card">
+                <span class="section-icon">🎭</span>
                 <h2 class="section-title">搞笑版块</h2>
-                <p class="section-desc">快乐加倍的祝福<br>让你笑着迎新年</p>
+                <p class="section-desc">快乐至上<br>笑口常开</p>
                 <button class="draw-btn" onclick="drawBlessing('funny')">抽取祝福</button>
-                <div class="disclaimer">
-                    ⚠️ 免责声明：本版块祝福可能引起捧腹大笑、表情失控等症状，后果自负哦～
-                </div>
+                <div class="disclaimer">⚠️ 只是图一乐，请勿上头，请别当真～</div>
             </div>
         </div>
+
+        <a href="javascript:location.reload()" class="back-home">↻ 重新开始</a>
     </div>
 
     <!-- 祝福卡片弹窗 -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="blessing-card" id="blessingCard">
-            <div class="card-background" id="cardBackground"></div>
+            <div class="card-deco-border"></div>
+            <span class="card-corner tl">✿</span>
+            <span class="card-corner tr">✿</span>
+            <span class="card-corner bl">✿</span>
+            <span class="card-corner br">✿</span>
+            <div class="card-bg" id="cardBg"></div>
             <div class="card-overlay"></div>
-            <div class="card-content">
-                <div class="card-category" id="cardCategory"></div>
+            <div class="card-inner">
+                <div class="card-tag" id="cardTag"></div>
                 <div class="card-text" id="cardText"></div>
-                <div class="card-footer">
-                    <span class="card-signature">—— 老己 2025 ——</span>
-                    <button class="card-close" onclick="closeModal()">×</button>
+                <div class="card-bottom">
+                    <span class="card-sign">—— 老己 · 2025 ——</span>
+                    <div class="card-btns">
+                        <button class="card-btn btn-redraw" id="redrawBtn" title="再抽一张">🎲</button>
+                        <button class="card-btn btn-close" onclick="closeModal()" title="关闭">✕</button>
+                    </div>
                 </div>
-                <button class="redraw-btn" id="redrawBtn" onclick="">🎲 再抽一张</button>
             </div>
         </div>
     </div>
 
     <script>
-        // 图片数组
+        // 28张卡片背景图片
         const images = [
             'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/0364069d607178085976a6fcf07922c0.jpg',
             'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/253892ad60ab4bdd126071b32a0ad105.jpg',
@@ -505,7 +534,7 @@
                 "愿你的2025，如诗如画，如梦如歌。每一个清晨都有温柔的阳光，每一个夜晚都有皎洁的月光相伴。",
                 "愿你在新的一年里，与美好不期而遇，与温柔撞个满怀。所有的期待都能如约而至。",
                 "愿你的心中有花开，眼里有星辰，步履不停，温柔且坚定地走过2025的每一天。",
-                "愿你如春风般自在，如夏花般绚烂，如秋叶般从容，如冬雪般纯净。",
+                "愿你如春风般自在，如夏花般绚烂，如秋叶般从容，如冬雪般纯净。四季轮转，皆是美好。",
                 "愿你在时光的长河里，采撷属于自己的那束光，照亮前行的路，也温暖身边的人。",
                 "愿你的故事里写满热爱，愿你的生活里充满诗意，愿你成为自己的太阳，不必借谁的光。",
                 "愿你心有所向，未来可期。愿你眼中有光，笑里有糖。2025，愿你被世界温柔以待。",
@@ -539,26 +568,27 @@
             ]
         };
 
-        const categoryNames = {
-            literary: '📜 文艺版块',
-            warm: '🏠 平淡温馨版块',
-            funny: '😂 搞笑版块'
+        const tagNames = {
+            literary: '📜 文艺祝福',
+            warm: '🏠 温馨祝福',
+            funny: '🎭 快乐祝福'
         };
 
         let currentCategory = '';
 
         // 创建樱花
         function createSakura() {
-            const introPage = document.getElementById('introPage');
+            const intro = document.getElementById('introPage');
             for (let i = 0; i < 30; i++) {
-                const sakura = document.createElement('div');
-                sakura.className = 'sakura';
-                sakura.style.left = Math.random() * 100 + '%';
-                sakura.style.animationDuration = (Math.random() * 5 + 5) + 's';
-                sakura.style.animationDelay = Math.random() * 10 + 's';
-                sakura.style.width = (Math.random() * 10 + 10) + 'px';
-                sakura.style.height = sakura.style.width;
-                introPage.appendChild(sakura);
+                const petal = document.createElement('div');
+                petal.className = 'sakura';
+                petal.style.left = Math.random() * 100 + '%';
+                petal.style.width = (Math.random() * 10 + 8) + 'px';
+                petal.style.height = petal.style.width;
+                petal.style.animationDuration = (Math.random() * 6 + 8) + 's';
+                petal.style.animationDelay = Math.random() * 12 + 's';
+                petal.style.opacity = Math.random() * 0.4 + 0.5;
+                intro.appendChild(petal);
             }
         }
 
@@ -570,15 +600,21 @@
         // 抽取祝福
         function drawBlessing(category) {
             currentCategory = category;
-            const blessingList = blessings[category];
-            const randomBlessing = blessingList[Math.floor(Math.random() * blessingList.length)];
-            const randomImage = images[Math.floor(Math.random() * images.length)];
+            const list = blessings[category];
+            const text = list[Math.floor(Math.random() * list.length)];
+            const img = images[Math.floor(Math.random() * images.length)];
 
-            document.getElementById('cardCategory').textContent = categoryNames[category];
-            document.getElementById('cardText').textContent = randomBlessing;
-            document.getElementById('cardBackground').style.backgroundImage = `url('${randomImage}')`;
-            document.getElementById('redrawBtn').onclick = function() { drawBlessing(category); };
-            
+            document.getElementById('cardTag').textContent = tagNames[category];
+            document.getElementById('cardText').textContent = text;
+            document.getElementById('cardBg').style.backgroundImage = `url('${img}')`;
+            document.getElementById('redrawBtn').onclick = function() {
+                const card = document.getElementById('blessingCard');
+                card.style.animation = 'none';
+                setTimeout(() => {
+                    card.style.animation = 'cardBounceIn 0.65s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    drawBlessing(category);
+                }, 10);
+            };
             document.getElementById('modalOverlay').classList.add('active');
         }
 
@@ -589,9 +625,7 @@
 
         // 点击遮罩关闭
         document.getElementById('modalOverlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
+            if (e.target === this) closeModal();
         });
 
         // 初始化
