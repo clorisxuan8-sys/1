@@ -1,4 +1,878 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 元旦快乐 - 昆明市第一人民医院护理团队</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0c1445 0%, #1a0a2e 50%, #16082a 100%);
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ==================== 入场页面 ==================== */
+        .intro-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0c1445 0%, #1a0a2e 50%, #16082a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .intro-page.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .intro-glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.15), transparent 70%);
+            border-radius: 50%;
+            animation: intro-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes intro-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        .intro-content {
+            text-align: center;
+            z-index: 10;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .intro-year {
+            font-size: clamp(60px, 15vw, 120px);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffd700, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+            letter-spacing: 10px;
+        }
+
+        .intro-hospital {
+            font-size: clamp(14px, 3vw, 20px);
+            color: rgba(255, 215, 0, 0.9);
+            letter-spacing: 4px;
+            margin: 20px 0 10px;
+        }
+
+        .intro-title {
+            font-size: clamp(28px, 7vw, 50px);
+            color: #fff;
+            letter-spacing: 15px;
+            margin: 10px 0 40px;
+            font-weight: 300;
+        }
+
+        .intro-hint {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 3px;
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        .intro-hint span {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 50%;
+            line-height: 36px;
+            margin-bottom: 10px;
+            animation: ripple 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes ripple {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
+            100% { box-shadow: 0 0 0 20px rgba(255, 215, 0, 0); }
+        }
+
+        /* 入场页星星 */
+        .intro-stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .intro-star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        /* ==================== 主页面 ==================== */
+        .main-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            opacity: 0;
+            transition: opacity 1s ease 0.5s;
+        }
+
+        .main-page.visible {
+            opacity: 1;
+        }
+
+        /* 星空背景 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* 流光粒子 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(45deg, #ffd700, #fff);
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+            animation: float-up 8s infinite;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* 光晕效果 */
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: 0;
+            animation: pulse-glow 6s ease-in-out infinite;
+        }
+
+        .orb1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #667eea, transparent);
+            top: -100px;
+            right: -100px;
+        }
+
+        .orb2 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #f093fb, transparent);
+            bottom: -50px;
+            left: -50px;
+            animation-delay: -3s;
+        }
+
+        .orb3 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, #4facfe, transparent);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -1.5s;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.1); }
+        }
+
+        /* 背景医院水印 */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(20px, 5vw, 40px);
+            color: rgba(255, 215, 0, 0.06);
+            white-space: nowrap;
+            letter-spacing: 10px;
+            z-index: 0;
+            pointer-events: none;
+            text-align: center;
+            line-height: 2;
+        }
+
+        /* 主内容 */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px;
+        }
+
+        /* 年份数字 */
+        .year {
+            font-size: clamp(70px, 18vw, 160px);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffd700 0%, #fff 25%, #ffd700 50%, #fff 75%, #ffd700 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+            letter-spacing: 10px;
+            line-height: 1;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% center; }
+            100% { background-position: -200% center; }
+        }
+
+        /* 主标题 */
+        .title {
+            font-size: clamp(32px, 8vw, 65px);
+            font-weight: 300;
+            color: #fff;
+            margin: 20px 0 30px;
+            letter-spacing: 15px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            position: relative;
+        }
+
+        .title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+        }
+
+        /* 装饰线 */
+        .decorative-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .line {
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.6), transparent);
+        }
+
+        .diamond {
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            transform: rotate(45deg);
+            box-shadow: 0 0 15px #ffd700;
+        }
+
+        /* 医院祝福 */
+        .hospital-greeting {
+            margin-top: 40px;
+            padding: 30px 50px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hospital-greeting::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 4s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
+        }
+
+        .nursing-icon {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .hospital-name {
+            font-size: clamp(15px, 3.5vw, 22px);
+            color: rgba(255, 215, 0, 0.95);
+            font-weight: 500;
+            letter-spacing: 4px;
+            margin-bottom: 12px;
+        }
+
+        .hospital-wish {
+            font-size: clamp(18px, 4.5vw, 28px);
+            color: #fff;
+            font-weight: 300;
+            letter-spacing: 6px;
+        }
+
+        /* 随机祝福按钮 */
+        .blessing-btn {
+            margin-top: 40px;
+            padding: 18px 45px;
+            font-size: 18px;
+            color: #1a0a2e;
+            background: linear-gradient(135deg, #ffd700, #ffed4a, #ffd700);
+            background-size: 200% 200%;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            letter-spacing: 3px;
+            font-weight: 600;
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: btn-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes btn-glow {
+            0%, 100% { box-shadow: 0 10px 40px rgba(255, 215, 0, 0.4); }
+            50% { box-shadow: 0 15px 50px rgba(255, 215, 0, 0.6); }
+        }
+
+        .blessing-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            background-position: right center;
+        }
+
+        .blessing-btn:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .blessing-btn::after {
+            content: '🎁';
+            margin-left: 10px;
+        }
+
+        /* 祝福弹窗 */
+        .blessing-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .blessing-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .blessing-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 30px;
+            padding: 50px 40px;
+            text-align: center;
+            max-width: 400px;
+            margin: 20px;
+            transform: scale(0.8) translateY(50px);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .blessing-modal.active .blessing-card {
+            transform: scale(1) translateY(0);
+        }
+
+        .blessing-emoji {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .blessing-text {
+            font-size: clamp(20px, 5vw, 28px);
+            color: #fff;
+            line-height: 1.8;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+
+        .blessing-from {
+            font-size: 14px;
+            color: rgba(255, 215, 0, 0.8);
+            letter-spacing: 2px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+            transform: rotate(90deg);
+        }
+
+        /* 底部祝福标签 */
+        .blessings {
+            margin-top: 35px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .blessing-tag {
+            padding: 10px 22px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .blessing-tag:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+
+        /* 烟花画布 */
+        #fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .title {
+                letter-spacing: 8px;
+            }
+            .hospital-greeting {
+                padding: 25px 20px;
+                margin: 30px 10px;
+            }
+            .hospital-wish {
+                letter-spacing: 3px;
+            }
+            .blessing-btn {
+                padding: 15px 35px;
+                font-size: 16px;
+            }
+            .blessing-card {
+                padding: 40px 25px;
+            }
+            .watermark {
+                font-size: 16px;
+                letter-spacing: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== 入场页面 ==================== -->
+    <div class="intro-page" id="introPage" onclick="enterMain()">
+        <div class="intro-stars" id="introStars"></div>
+        <div class="intro-glow"></div>
+        <div class="intro-content">
+            <div class="intro-year">2025</div>
+            <div class="intro-hospital">昆明市第一人民医院护理团队</div>
+            <div class="intro-title">元旦快乐</div>
+            <div class="intro-hint">
+                <span>👆</span><br>
+                轻触屏幕 开启祝福
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 主页面 ==================== -->
+    <div class="main-page" id="mainPage">
+        <!-- 背景水印 -->
+        <div class="watermark">
+            昆明市第一人民医院护理团队<br>
+            祝您元旦快乐
+        </div>
+
+        <!-- 光晕 -->
+        <div class="glow-orb orb1"></div>
+        <div class="glow-orb orb2"></div>
+        <div class="glow-orb orb3"></div>
+
+        <!-- 星空 -->
+        <div class="stars" id="stars"></div>
+
+        <!-- 粒子 -->
+        <div class="particles" id="particles"></div>
+
+        <!-- 烟花 -->
+        <canvas id="fireworks"></canvas>
+
+        <!-- 主内容 -->
+        <div class="main-content">
+            <div class="year">2025</div>
+            <div class="title">元旦快乐</div>
+            
+            <div class="decorative-line">
+                <div class="line"></div>
+                <div class="diamond"></div>
+                <div class="line"></div>
+            </div>
+
+            <div class="hospital-greeting">
+                <div class="nursing-icon">💝</div>
+                <div class="hospital-name">昆明市第一人民医院护理团队</div>
+                <div class="hospital-wish">祝您元旦快乐</div>
+            </div>
+
+            <button class="blessing-btn" onclick="showRandomBlessing()">
+                抽取新年祝福
+            </button>
+
+            <div class="blessings">
+                <div class="blessing-tag">✨ 万事如意</div>
+                <div class="blessing-tag">🌟 阖家幸福</div>
+                <div class="blessing-tag">💫 身体健康</div>
+                <div class="blessing-tag">🎊 事业顺利</div>
+                <div class="blessing-tag">💖 平安喜乐</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 祝福弹窗 -->
+    <div class="blessing-modal" id="blessingModal" onclick="closeModal(event)">
+        <div class="blessing-card" onclick="event.stopPropagation()">
+            <div class="close-btn" onclick="closeBlessing()">×</div>
+            <div class="blessing-emoji" id="blessingEmoji">🎊</div>
+            <div class="blessing-text" id="blessingText">祝您新年快乐！</div>
+            <div class="blessing-from">—— 昆明市第一人民医院护理团队 ——</div>
+        </div>
+    </div>
+
+    <script>
+        // 祝福语列表
+        const blessings = [
+            { emoji: '🎊', text: '愿新的一年，所有美好如约而至，所有遗憾都是惊喜的铺垫！' },
+            { emoji: '✨', text: '2025，愿您心想事成，万事胜意，前程似锦！' },
+            { emoji: '🌟', text: '新年新气象，愿您的生活充满阳光与希望！' },
+            { emoji: '💖', text: '愿您在新的一年里，身体健康，平安喜乐，幸福美满！' },
+            { emoji: '🎉', text: '2025，愿所有的努力都有回报，所有的期待都能实现！' },
+            { emoji: '🌈', text: '新的一年，愿您遇见更好的自己，拥抱更美的风景！' },
+            { emoji: '💫', text: '元旦快乐！愿您的2025，日日是好日，事事皆顺心！' },
+            { emoji: '🎁', text: '愿新年的钟声带给您无尽的祝福，幸福安康每一天！' },
+            { emoji: '🏮', text: '辞旧迎新，愿您在2025年大展宏图，鹏程万里！' },
+            { emoji: '💝', text: '愿这份来自护理团队的祝福，温暖您的整个2025！' },
+            { emoji: '🌸', text: '新年伊始，愿您的每一天都如花般绚烂，如诗般美好！' },
+            { emoji: '⭐', text: '2025，愿您成为自己的光，照亮前行的路！' },
+            { emoji: '🎀', text: '元旦快乐！愿您的生活甜甜蜜蜜，顺顺利利！' },
+            { emoji: '🌺', text: '愿新的一年，您的笑容比阳光更灿烂，生活比蜜糖更甜！' },
+            { emoji: '🎯', text: '2025，愿您目标达成，梦想成真，一切皆有可能！' }
+        ];
+
+        // 创建入场页星星
+        function createIntroStars() {
+            const container = document.getElementById('introStars');
+            for (let i = 0; i < 80; i++) {
+                const star = document.createElement('div');
+                star.className = 'intro-star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = star.style.height = Math.random() * 3 + 1 + 'px';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // 进入主页面
+        function enterMain() {
+            document.getElementById('introPage').classList.add('hidden');
+            document.getElementById('mainPage').classList.add('visible');
+            initMainPage();
+        }
+
+        // 初始化主页面
+        function initMainPage() {
+            createStars();
+            createParticles();
+            initFireworks();
+        }
+
+        // 创建星星
+        function createStars() {
+            const container = document.getElementById('stars');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = star.style.height = Math.random() * 3 + 1 + 'px';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // 创建浮动粒子
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // 显示随机祝福
+        function showRandomBlessing() {
+            const blessing = blessings[Math.floor(Math.random() * blessings.length)];
+            document.getElementById('blessingEmoji').textContent = blessing.emoji;
+            document.getElementById('blessingText').textContent = blessing.text;
+            document.getElementById('blessingModal').classList.add('active');
+        }
+
+        // 关闭祝福
+        function closeBlessing() {
+            document.getElementById('blessingModal').classList.remove('active');
+        }
+
+        // 点击背景关闭
+        function closeModal(event) {
+            if (event.target === document.getElementById('blessingModal')) {
+                closeBlessing();
+            }
+        }
+
+        // 烟花效果
+        function initFireworks() {
+            const canvas = document.getElementById('fireworks');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            class Firework {
+                constructor() {
+                    this.reset();
+                }
+
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = canvas.height;
+                    this.targetY = Math.random() * canvas.height * 0.5;
+                    this.speed = Math.random() * 3 + 4;
+                    this.exploded = false;
+                    this.particles = [];
+                    this.hue = Math.random() * 60 + 30;
+                }
+
+                update() {
+                    if (!this.exploded) {
+                        this.y -= this.speed;
+                        if (this.y <= this.targetY) {
+                            this.explode();
+                        }
+                    } else {
+                        this.particles.forEach(p => {
+                            p.x += p.vx;
+                            p.y += p.vy;
+                            p.vy += 0.05;
+                            p.alpha -= 0.008;
+                            p.size *= 0.98;
+                        });
+                        this.particles = this.particles.filter(p => p.alpha > 0);
+                        if (this.particles.length === 0) {
+                            this.reset();
+                        }
+                    }
+                }
+
+                explode() {
+                    this.exploded = true;
+                    for (let i = 0; i < 80; i++) {
+                        const angle = (Math.PI * 2 / 80) * i;
+                        const speed = Math.random() * 4 + 2;
+                        this.particles.push({
+                            x: this.x,
+                            y: this.y,
+                            vx: Math.cos(angle) * speed,
+                            vy: Math.sin(angle) * speed,
+                            alpha: 1,
+                            size: Math.random() * 3 + 1,
+                            hue: this.hue + Math.random() * 20
+                        });
+                    }
+                }
+
+                draw() {
+                    if (!this.exploded) {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                        ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`;
+                        ctx.shadowBlur = 20;
+                        ctx.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
+                        ctx.fill();
+                    } else {
+                        this.particles.forEach(p => {
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                            ctx.fillStyle = `hsla(${p.hue}, 100%, 70%, ${p.alpha})`;
+                            ctx.shadowBlur = 10;
+                            ctx.shadowColor = `hsla(${p.hue}, 100%, 50%, ${p.alpha})`;
+                            ctx.fill();
+                        });
+                    }
+                }
+            }
+
+            const fireworks = [new Firework(), new Firework(), new Firework()];
+
+            function animate() {
+                ctx.fillStyle = 'rgba(12, 20, 69, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                fireworks.forEach(f => {
+                    f.update();
+                    f.draw();
+                });
+                
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+
+            animate();
+        }
+
+        // 初始化入场页
+        createIntroStars();
+    </script>
+</body>
+</html>
+
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
