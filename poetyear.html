@@ -3,303 +3,636 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026年开场白 - 岁华纪丽</title>
+    <title>2026·诗意新年</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        /* --- 字体引入 --- */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;500;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
+
         :root {
-            --palace-red: #8B1A1A;
-            --gold: #D4AF37;
-            --white: #FFFFFF;
-            --paper: #f4f0e6;
+            /* 调色板：深邃故宫红与鎏金 */
+            --bg-deep: #1a0505;
+            --palace-red: #7c1a1a;
+            --gold-gradient: linear-gradient(135deg, #fce3ba 0%, #d4af37 50%, #fce3ba 100%);
+            --glass-surface: rgba(255, 252, 248, 0.90);
         }
 
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; background-color: #000;
-            font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", serif;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Serif SC', 'Songti SC', serif;
+            overflow: hidden;
+            background-color: var(--bg-deep);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
         }
 
-        /* 核心背景：三张图片的深度处理 */
-        #bg-stage {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; overflow: hidden;
-        }
-        .bg-layer {
-            position: absolute; width: 110%; height: 110%;
-            top: -5%; left: -5%;
-            background-size: cover; background-position: center;
-            opacity: 0; transition: opacity 2s ease-in-out, transform 1s ease-out;
-            filter: brightness(0.7) sepia(0.2);
-        }
-        .bg-layer.active { opacity: 1; }
-
-        /* 故宫红渐变蒙层 */
-        #vignette {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none;
-            background: radial-gradient(circle, transparent 30%, rgba(139, 26, 26, 0.5) 100%);
+        /* --- 沉浸式背景 --- */
+        #bg-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -3;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background-image 5s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: brightness(0.9) contrast(1.1);
         }
 
-        #canvas-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2; pointer-events: none;
+        /* 电影质感滤镜 */
+        #texture-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 50% 40%, rgba(0,0,0,0) 20%, rgba(0,0,0,0.6) 90%);
+            pointer-events: none;
         }
 
-        /* UI逻辑 */
-        #ui-layer {
-            position: relative; z-index: 10; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        #snow-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        /* 唯美开屏 */
-        #intro-screen {
-            text-align: center; color: var(--white); cursor: pointer; pointer-events: all;
-            border: 1px solid rgba(212, 175, 55, 0.4); padding: 60px;
-            background: rgba(139, 26, 26, 0.2); backdrop-filter: blur(10px);
+        /* --- 容器 --- */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
         }
-        .intro-title {
-            font-size: 3rem; letter-spacing: 1.2rem; margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(212,175,55,0.6); font-weight: 200;
-        }
-        .intro-sub { color: var(--gold); letter-spacing: 0.5rem; margin-bottom: 40px; }
 
-        /* 诗词卡片系统 - 高级典雅 */
-        #card-container {
-            position: absolute; width: 100%; height: 100%;
-            display: none; justify-content: center; align-items: center;
-            pointer-events: all;
+        /* --- 场景动画基础 --- */
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.98) translateY(10px);
+            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
         }
-        .poem-card {
-            background: var(--paper); width: 340px; min-height: 500px;
-            padding: 50px 30px; box-shadow: 0 50px 100px rgba(0,0,0,0.8);
-            border: 2px solid var(--gold); position: relative;
-            opacity: 0; transform: translateY(50px);
-            transition: all 1s cubic-bezier(0.2, 1, 0.3, 1);
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .poem-card.active { opacity: 1; transform: translateY(0); }
 
-        .poem-main {
-            writing-mode: vertical-rl; font-size: 2.5rem; height: 320px;
-            color: #1a1a1a; letter-spacing: 0.8rem; line-height: 1.5;
-            padding-right: 20px; border-right: 1px solid rgba(212, 175, 55, 0.3);
+        .scene.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1) translateY(0);
+        }
+
+        /* --- 场景1：序幕 --- */
+        .intro-box { text-align: center; position: relative; }
+
+        .year-tag {
+            font-size: 1.2rem;
+            letter-spacing: 0.5em;
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            font-weight: 300;
+            opacity: 0.9;
+            display: inline-block;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.5);
+            padding-bottom: 5px;
+        }
+
+        .main-title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 6rem;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+            letter-spacing: 0.1em;
+            background-size: 200% auto;
+            animation: shine 5s linear infinite;
+        }
+
+        .sub-title {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.4em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 4rem;
+        }
+
+        .btn-start-grand {
+            position: relative;
+            padding: 18px 70px;
+            font-size: 1.3rem;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.6);
+            border-radius: 60px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            backdrop-filter: blur(5px);
+            font-family: 'Noto Serif SC';
+            letter-spacing: 0.2em;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+        .btn-start-grand:hover {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.15);
+            transform: translateY(-3px);
+        }
+
+        /* --- 场景2：仪式感抽取 (Moon Gate) - 修改字体与布局 --- */
+        .moon-gate-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .outer-ring {
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            animation: spin 30s linear infinite;
+        }
+        .outer-ring::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: 50%;
+            width: 4px; height: 4px;
+            background: #d4af37;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #d4af37;
+        }
+
+        .inner-circle {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: rgba(20, 10, 10, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.05);
+        }
+
+        .moon-gate-container:hover .inner-circle {
+            transform: scale(1.05);
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.6);
+            box-shadow: 0 0 80px rgba(212, 175, 55, 0.3);
+        }
+
+        /* 【修改】字体与布局：端庄宋体，横排 */
+        .draw-text-group {
+            display: flex;
+            flex-direction: column; /* 竖向排列两行文字 */
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* 两行之间的间距 */
+            
+            font-family: 'Noto Serif SC', serif; /* 端庄宋体 */
+            font-weight: 700; /* 加粗更有气势 */
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            pointer-events: none;
+        }
+        
+        /* 第一行：开启你的 */
+        .draw-text-group .line-1 {
+            font-size: 1.8rem;
+            letter-spacing: 0.2em;
+            opacity: 0.9;
+        }
+
+        /* 第二行：诗意新年 (加大一点) */
+        .draw-text-group .line-2 {
+            font-size: 2.2rem;
+            letter-spacing: 0.3em;
+            color: #d4af37; /* 金色 */
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .loading-hint {
+            position: absolute;
+            bottom: -60px;
+            font-size: 1.1rem;
+            color: #d4af37;
+            letter-spacing: 0.3em;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        /* --- 场景3：结果卡片 --- */
+        .card-wrapper { perspective: 1000px; }
+
+        .poetry-card {
+            width: 460px;
+            padding: 70px 50px;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(160deg, rgba(255,252,248,0.95) 0%, rgba(245,240,230,0.90) 100%);
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.6), 
+                inset 0 0 0 1px rgba(255, 255, 255, 0.5), 
+                inset 0 0 20px rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transform-style: preserve-3d;
+            transition: transform 0.1s;
+        }
+
+        .ornament-top {
+            width: 100%; height: 40px;
+            position: absolute; top: 20px; left: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='10' viewBox='0 0 40 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0 L40 10 L20 10 L0 10 Z' fill='%23d4af37' fill-opacity='0.2'/%3E%3C/svg%3E");
+            background-size: 20px 10px;
+            background-repeat: repeat-x;
+            opacity: 0.5;
+        }
+
+        .card-header {
+            font-size: 0.9rem;
+            color: #8B0000;
+            font-weight: 700;
+            letter-spacing: 0.4em;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .card-header::before, .card-header::after {
+            content: ''; width: 20px; height: 1px; background: #8B0000; opacity: 0.5;
+        }
+
+        .poem-text {
+            font-size: 2rem;
+            line-height: 1.6;
+            color: #2c0e0e;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-family: 'Songti SC', serif;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+        }
+
+        .poem-source {
+            font-size: 1rem;
+            color: #664;
+            margin-bottom: 40px;
+            font-style: italic;
+            font-family: 'Noto Serif SC';
+        }
+
+        .desc-box {
+            position: relative;
+            padding: 20px 0;
+            border-top: 1px solid rgba(139, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(139, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .poem-desc {
+            font-size: 1.05rem;
+            line-height: 2;
+            color: #333;
+            text-align: justify;
+            text-align-last: center;
+            font-weight: 400;
+        }
+
+        .stamp-mark {
+            width: 40px; height: 40px;
+            background-color: #900;
+            color: #fff;
+            border-radius: 4px;
+            line-height: 40px;
+            font-family: 'Ma Shan Zheng';
+            font-size: 20px;
             margin: 0 auto;
-        }
-        .poem-sub {
-            margin-top: 40px; font-size: 0.9rem; color: #555; line-height: 1.8;
-            text-align: justify; border-top: 1px dashed var(--gold); padding-top: 20px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
         }
 
-        /* 装饰角 */
-        .decor { position: absolute; width: 40px; height: 40px; border: 2px solid var(--gold); }
-        .tl { top: 15px; left: 15px; border-right: none; border-bottom: none; }
-        .br { bottom: 15px; right: 15px; border-left: none; border-top: none; }
+        .actions {
+            margin-top: 50px;
+            display: flex;
+            gap: 25px;
+        }
 
-        #webcam { display: none; }
+        .btn-icon {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+            font-size: 1.2rem;
+        }
+        .btn-text {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.4);
+            color: #fff;
+            padding: 0 30px;
+            height: 50px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Noto Serif SC';
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+        .btn-icon:hover, .btn-text:hover {
+            background: #d4af37; border-color: #d4af37; color: #2c0e0e;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        @keyframes shine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse-glow { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+        @media (max-width: 600px) {
+            .main-title { font-size: 4rem; }
+            .poetry-card { width: 90%; padding: 50px 25px; }
+            .poem-text { font-size: 1.6rem; }
+            .moon-gate-container { width: 280px; height: 280px; }
+            .inner-circle { width: 240px; height: 240px; }
+        }
     </style>
-
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-                "@mediapipe/tasks-vision": "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm"
-            }
-        }
-    </script>
 </head>
 <body>
 
-    <!-- 背景素材映射 -->
-    <div id="bg-stage">
-        <!-- 请确保图片名正确，或者将这里的 URL 替换为你图片的 base64/在线地址 -->
-        <div class="bg-layer active" id="layer1" style="background-image: url('1.jpg')"></div>
-        <div class="bg-layer" id="layer2" style="background-image: url('2.jpg')"></div>
-        <div class="bg-layer" id="layer3" style="background-image: url('3.jpg')"></div>
-    </div>
-    
-    <div id="vignette"></div>
-    <video id="webcam" autoplay playsinline></video>
-    <div id="canvas-container"></div>
+    <div id="bg-container"></div>
+    <div id="texture-overlay"></div>
+    <canvas id="snow-canvas"></canvas>
 
-    <div id="ui-layer">
-        <div id="intro-screen" onclick="app.start()">
-            <div class="intro-title">用诗意开启你的2026</div>
-            <div class="intro-sub">岁华纪丽 · 雪落紫禁</div>
-            <button style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:10px 30px; cursor:pointer;">开启开场白</button>
+    <div class="container">
+        
+        <div class="scene active" id="scene-intro">
+            <div class="intro-box">
+                <div class="year-tag">二零二六 · 丙午年</div>
+                <div class="main-title">诗意新年</div>
+                <div class="sub-title">于故宫雪色中，寻一纸流年</div>
+                <button class="btn-start-grand" onclick="goToDraw()">开启旅程</button>
+            </div>
         </div>
-        <div id="card-container"></div>
+
+        <div class="scene" id="scene-draw">
+            <div class="moon-gate-container" id="drawBtn" onclick="performDraw()">
+                <div class="outer-ring"></div>
+                <div class="inner-circle">
+                    <div class="draw-text-group">
+                        <span class="line-1">开启你的</span>
+                        <span class="line-2">诗意新年</span>
+                    </div>
+                </div>
+            </div>
+            <div class="loading-hint" id="loadingText">瑞雪兆丰年 · 正在寻觅...</div>
+        </div>
+
+        <div class="scene" id="scene-result">
+            <div class="card-wrapper">
+                <div class="poetry-card" id="captureTarget">
+                    <div class="ornament-top"></div>
+                    <div class="card-header">2026 NEW YEAR</div>
+                    <div class="poem-text" id="pText"></div>
+                    <div class="poem-source" id="pSource"></div>
+                    <div class="desc-box">
+                        <div class="poem-desc" id="pDesc"></div>
+                    </div>
+                    <div class="stamp-mark">福</div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn-text" onclick="downloadCard()">下载珍藏</button>
+                <button class="btn-icon" onclick="resetToDraw()" title="再抽一次">↻</button>
+            </div>
+        </div>
+
     </div>
 
-    <script type="module">
-        import * as THREE from 'three';
-        import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
-
-        const POEMS = [
-            { m: "老去又逢新岁月，春来更有好花枝。", s: "虽然人已经年老，但迎来了新的岁月，春天到来时更会有美丽的花朵盛开。你要自信、坚定地迎接。" },
-            { m: "但得老亲常健好，不辞新岁且穷忙。", s: "祝愿家中父母长辈身体健康安好。家是温暖的港湾，只要他们在，我们就有归处。" },
-            { m: "韶华长在，明年依旧，相与笑春风。", s: "岁月悠悠，明年花儿依然绽放。快乐的场景和时光置换了，时光不老，我们不散。" },
-            { m: "一年忧喜今宵过，两鬓风霜明日新。", s: "旧年的快忧都过去了，学会“翻篇”的能力。封存往事，展望新年。" },
-            { m: "更祝明朝风日好，梅花满眼踏新年。", s: "衷心祝愿明天风和日丽，满眼都是盛开的梅花，迎接新一年的到来。" },
-            { m: "新春嘉平，长乐未央。", s: "天地有序，昼夜相承。白日虽有黄昏，夜色仍有月华。起落本常态，低谷亦有光。" },
-            { m: "历添新岁月，春满旧山河。", s: "山河依旧，却因春意而焕然一新。不必换一片天地，也能迎来万物复苏的光景。" },
-            { m: "但愿年年，春风有信，人心长久。", s: "寄托对世事守约的期待，落笔于人世最珍贵的情感——信任、陪伴与恒常。" },
-            { m: "岁岁年年，共欢同乐。", s: "好光景不止于一时，而是有人同行、有人分享。真正的喜悦是彼此照见的温暖。" },
-            { m: "休将旧事从头说，且喜新年入手来。", s: "不必反复回顾往昔。新年不再是遥远的期盼，而是握在掌中的现实。重心永远在正在展开的这一页。" }
+    <script>
+        // --- 1. 资源配置 ---
+        const bgImages = [
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/故宫.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/故宫2.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/故宫3.jpg'
         ];
 
-        // GLSL: 极其精致的雪花
-        const snowVS = `
-            uniform float uTime;
-            uniform vec2 uMouse;
-            varying float vAlpha;
-            void main() {
-                vec3 pos = position;
-                // 模拟雪花轻盈飘落
-                pos.x += sin(uTime * 0.5 + pos.y * 0.1) * 2.0;
-                pos.y = mod(pos.y - uTime * 6.0, 100.0) - 50.0;
-                
-                // 鼠标/手势排斥
-                float dist = distance(pos.xy, uMouse * 50.0);
-                if(dist < 15.0) pos.x += (pos.x - uMouse.x * 50.0) * 0.5;
+        // --- 2. 诗词库 ---
+        const poems = [
+            { text: "老去又逢新岁月<br>春来更有好花枝", source: "明·陈献章《元旦试笔》", desc: "生命本就是流动的。不要惧怕时间的流逝，它不仅带来年龄，更带来了新的岁月与可能。请自信、坚定地迎接更美好的未来。" },
+            { text: "但得老亲常健好<br>不辞新岁且穷忙", source: "宋·吕本中《得扬州书》", desc: "只要父母长辈身体安康，即使新的一年忙碌奔波也心甘情愿。家是温暖的港湾，父母在，人生便有归处。" },
+            { text: "韶华长在，明年依旧<br>相与笑春风", source: "宋·张先《少年游》", desc: "岁月流转，花儿依然准时开放。这是一种永恒的约定：时光不老，我们不散。愿往后每一年，都能在春风中把酒言欢。" },
+            { text: "一年忧喜今宵过<br>两鬓风霜明日新", source: "明·谢榛《除夕吴子充诸人集旅寓有感》", desc: "学会“翻篇”的能力。旧年的忧喜今晚便成过往，明日又是崭新的一天。无论情绪仍在与否，我们要有能力过好当下的日子。" },
+            { text: "更祝明朝风日好<br>梅花满眼踏新年", source: "明·吴与弼《除夜次唐诗韵》", desc: "衷心祝愿明天风和日丽，满眼皆是盛开的梅花。让我们怀着洒然自得的心情，踏着这美好的景致，迈入新的一年。" },
+            { text: "历添新岁月<br>春满旧山河", source: "宋·叶梦得", desc: "山河熟悉安稳，却因春意而焕然一新。人生不是推倒重来，而是在既有的努力与沉淀之上，继续向前，迎来万物复苏。" },
+            { text: "但愿年年<br>春风有信，人心长久", source: "宋·蔡伸《柳梢青》", desc: "不求惊天动地，只愿岁月缓慢向前，所盼皆有回应。愿春风如约而至，愿人与人之间多一份笃定与陪伴，长久而安。" },
+            { text: "岁岁年年，共欢同乐<br>嘉庆于时新", source: "宋·晏殊《少年游》", desc: "真正的喜悦是有人同行、有人分享。愿好运就在当下悄然发生，愿每一个当下都值得庆贺，岁岁安然。" },
+            { text: "愿得长如此<br>年年物候新", source: "唐·卢照邻《元日述怀》", desc: "这是一种克制而深情的祈愿。不求瞬间的惊艳，只愿当下的安稳与从容能够延续。时光向前，万物常新，日日皆有风景。" },
+            { text: "休将旧事从头说<br>且喜新年入手来", source: "宋词人", desc: "真正的成熟是承认过去、然后放下。新年已如礼物般握在掌中，愿你轻装前行，把热情与勇气留给正在到来的时光。" }
+        ];
 
-                vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-                gl_PointSize = 4.0 * (100.0 / -mvPosition.z);
-                gl_Position = projectionMatrix * mvPosition;
-                vAlpha = smoothstep(-50.0, -30.0, pos.y);
-            }
-        `;
-
-        const snowFS = `
-            varying float vAlpha;
-            void main() {
-                float d = distance(gl_PointCoord, vec2(0.5));
-                if(d > 0.5) discard;
-                gl_FragColor = vec4(1.0, 1.0, 1.0, (0.5-d) * vAlpha * 1.5);
-            }
-        `;
-
-        class PalaceExperience {
-            constructor() {
-                this.initThree();
-                this.initSnow();
-                this.initMediaPipe();
-                this.bindEvents();
-                this.currentCard = 0;
-            }
-
-            initThree() {
-                this.scene = new THREE.Scene();
-                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-                this.camera.position.z = 50;
-                this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-                this.renderer.setSize(window.innerWidth, window.innerHeight);
-                document.getElementById('canvas-container').appendChild(this.renderer.domElement);
-                
-                this.mouse = new THREE.Vector2();
-                this.clock = new THREE.Clock();
-            }
-
-            initSnow() {
-                const geo = new THREE.BufferGeometry();
-                const pos = [];
-                for(let i=0; i<5000; i++) {
-                    pos.push((Math.random()-0.5)*150, (Math.random()-0.5)*100, (Math.random()-0.5)*100);
-                }
-                geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-                this.snowMat = new THREE.ShaderMaterial({
-                    uniforms: { uTime: {value:0}, uMouse: {value: this.mouse} },
-                    vertexShader: snowVS, fragmentShader: snowFS, transparent: true
-                });
-                this.scene.add(new THREE.Points(geo, this.snowMat));
-            }
-
-            async initMediaPipe() {
-                try {
-                    const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
-                    this.handLandmarker = await HandLandmarker.createFromOptions(vision, {
-                        baseOptions: { modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`, delegate: "GPU" },
-                        runningMode: "VIDEO", numHands: 1
-                    });
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                    document.getElementById('webcam').srcObject = stream;
-                } catch(e) { console.log("MediaPipe offline"); }
-            }
-
-            bindEvents() {
-                window.addEventListener('mousemove', (e) => {
-                    const x = (e.clientX / window.innerWidth) * 2 - 1;
-                    const y = -(e.clientY / window.innerHeight) * 2 + 1;
-                    this.mouse.set(x, y);
-                    // 背景视觉差
-                    const layers = document.querySelectorAll('.bg-layer');
-                    layers.forEach(l => {
-                        l.style.transform = `translate(${x * 20}px, ${y * 20}px) scale(1.1)`;
-                    });
-                });
-            }
-
-            start() {
-                document.getElementById('intro-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('intro-screen').style.display = 'none';
-                    document.getElementById('card-container').style.display = 'flex';
-                    this.showCard();
-                }, 1000);
-            }
-
-            showCard() {
-                if(this.currentCard >= 10) return;
-                
-                // 切换背景图
-                const layers = document.querySelectorAll('.bg-layer');
-                layers.forEach(l => l.classList.remove('active'));
-                const layerId = (this.currentCard % 3) + 1;
-                document.getElementById('layer' + layerId).classList.add('active');
-
-                const container = document.getElementById('card-container');
-                container.innerHTML = '';
-                const data = POEMS[this.currentCard];
-                
-                const card = document.createElement('div');
-                card.className = 'poem-card';
-                card.innerHTML = `
-                    <div class="decor tl"></div><div class="decor br"></div>
-                    <div class="poem-main">${data.m}</div>
-                    <div class="poem-sub">${data.s}</div>
-                    <div style="margin-top:20px; color:var(--gold); font-size:0.8rem;">点击屏幕 踏雪寻下一句</div>
-                `;
-                
-                card.onclick = () => {
-                    card.classList.remove('active');
-                    setTimeout(() => {
-                        this.currentCard++;
-                        this.showCard();
-                    }, 800);
-                };
-
-                container.appendChild(card);
-                setTimeout(() => card.classList.add('active'), 100);
-            }
-
-            animate() {
-                requestAnimationFrame(this.animate.bind(this));
-                const delta = this.clock.getElapsedTime();
-                this.snowMat.uniforms.uTime.value = delta;
-
-                // MediaPipe 手势追踪驱动雪花
-                if (this.handLandmarker && webcam.readyState >= 2) {
-                    const results = this.handLandmarker.detectForVideo(webcam, performance.now());
-                    if (results.landmarks.length > 0) {
-                        const hand = results.landmarks[0][8]; // 食指
-                        this.mouse.lerp(new THREE.Vector2((0.5 - hand.x) * 2, (0.5 - hand.y) * 2), 0.1);
-                    }
-                }
-
-                this.renderer.render(this.scene, this.camera);
-            }
+        // --- 3. 交互逻辑 ---
+        function switchScene(fromId, toId) {
+            const fromScene = document.getElementById(fromId);
+            const toScene = document.getElementById(toId);
+            fromScene.classList.remove('active');
+            setTimeout(() => { toScene.classList.add('active'); }, 1000);
         }
 
-        window.app = new PalaceExperience();
-        app.animate();
+        function goToDraw() { switchScene('scene-intro', 'scene-draw'); }
+
+        let isDrawing = false;
+        function performDraw() {
+            if (isDrawing) return;
+            isDrawing = true;
+
+            const drawBtn = document.getElementById('drawBtn');
+            const loading = document.getElementById('loadingText');
+
+            drawBtn.style.transform = 'scale(0.9)';
+            drawBtn.style.opacity = '0.7';
+            loading.style.opacity = '1';
+            loading.style.animation = 'pulse-glow 1.5s infinite';
+
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * poems.length);
+                const data = poems[randomIndex];
+                document.getElementById('pText').innerHTML = data.text;
+                document.getElementById('pSource').innerText = data.source;
+                document.getElementById('pDesc').innerText = data.desc;
+                switchScene('scene-draw', 'scene-result');
+                setTimeout(() => {
+                    isDrawing = false;
+                    drawBtn.style.transform = 'scale(1)';
+                    drawBtn.style.opacity = '1';
+                    loading.style.opacity = '0';
+                    loading.style.animation = '';
+                }, 1000);
+            }, 2000);
+        }
+
+        function resetToDraw() { switchScene('scene-result', 'scene-draw'); }
+
+        function downloadCard() {
+            const element = document.getElementById('captureTarget');
+            const originalShadow = element.style.boxShadow;
+            const originalTransform = element.style.transform;
+            
+            element.style.transform = "none";
+            element.style.boxShadow = "inset 0 0 0 1px rgba(180, 150, 100, 0.3)";
+            element.style.background = "#fffcf5"; 
+
+            html2canvas(element, {
+                backgroundColor: null,
+                scale: 3, 
+                useCORS: true
+            }).then(canvas => {
+                element.style.boxShadow = originalShadow;
+                element.style.transform = originalTransform;
+                element.style.background = ""; 
+
+                const link = document.createElement('a');
+                link.download = '2026诗意新年签.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        // --- 4. 背景轮播 ---
+        let currentBgIndex = 0;
+        const bgContainer = document.getElementById('bg-container');
+        function initBackground() {
+            const img = new Image();
+            img.onload = () => {
+                 bgContainer.style.backgroundImage = `url('${bgImages[0]}')`;
+                 setInterval(() => {
+                    currentBgIndex = (currentBgIndex + 1) % bgImages.length;
+                    bgContainer.style.backgroundImage = `url('${bgImages[currentBgIndex]}')`;
+                }, 8000);
+            };
+            img.src = bgImages[0];
+        }
+
+        // --- 5. 3D粒子雪效 (升级版) ---
+        function initSnow() {
+            const canvas = document.getElementById('snow-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            const particleCount = 1800;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = new Float32Array(particleCount);
+            const sizes = new Float32Array(particleCount);
+
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 25;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 25;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 15; 
+                velocities[i] = 0.003 + Math.random() * 0.005;
+                sizes[i] = Math.random(); 
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+            function getSprite() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 32; canvas.height = 32;
+                const ctx = canvas.getContext('2d');
+                const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+                grad.addColorStop(0, 'rgba(255,255,255,1)');
+                grad.addColorStop(0.5, 'rgba(255,255,255,0.4)');
+                grad.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 32, 32);
+                return new THREE.CanvasTexture(canvas);
+            }
+
+            const material = new THREE.PointsMaterial({
+                size: 0.15,
+                map: getSprite(),
+                transparent: true,
+                opacity: 0.8,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                sizeAttenuation: true
+            });
+
+            const particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+            camera.position.z = 5;
+
+            let time = 0;
+            function animate() {
+                requestAnimationFrame(animate);
+                time += 0.005;
+                const positions = particles.geometry.attributes.position.array;
+                for (let i = 0; i < particleCount; i++) {
+                    positions[i * 3 + 1] -= velocities[i];
+                    const windX = Math.sin(time + positions[i*3+1] * 0.5) * 0.004;
+                    const windZ = Math.cos(time + positions[i*3] * 0.5) * 0.002;
+                    positions[i * 3] += windX;
+                    positions[i * 3 + 2] += windZ;
+                    if (positions[i * 3 + 1] < -12) {
+                        positions[i * 3 + 1] = 12;
+                        positions[i * 3] = (Math.random() - 0.5) * 25;
+                    }
+                }
+                particles.geometry.attributes.position.needsUpdate = true;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        window.onload = () => { initBackground(); initSnow(); };
+        
+        document.addEventListener('mousemove', (e) => {
+            const card = document.querySelector('.poetry-card');
+            if(window.getComputedStyle(document.getElementById('scene-result')).opacity === '1'){
+                const x = (window.innerWidth / 2 - e.pageX) / 50;
+                const y = (window.innerHeight / 2 - e.pageY) / 50;
+                card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+            }
+        });
     </script>
 </body>
 </html>
