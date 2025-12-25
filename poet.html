@@ -9,13 +9,13 @@
     <style>
         /* --- 全局与字体 --- */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap'); /* 引入书法字体用于标题 */
 
         :root {
-            --palace-red: #A82828;
-            --imperial-gold: #C69C6D;
-            --snow-white: #F7F7F7;
-            --ink-black: #2C2C2C;
-            --glass-bg: rgba(255, 255, 255, 0.95);
+            --palace-red: #8B0000;   /* 深沉的宫墙红 */
+            --imperial-gold: #D4AF37; /* 更有质感的鎏金 */
+            --snow-white: #F8F9FA;
+            --ink-black: #1A1A1A;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,24 +23,32 @@
         body {
             font-family: 'Noto Serif SC', 'Songti SC', serif;
             overflow: hidden;
-            background-color: var(--palace-red);
+            background-color: #2c0e0e; /* 图片未加载时的深色底 */
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--ink-black);
+            color: var(--snow-white);
         }
 
-        /* --- 背景层 --- */
+        /* --- 背景层 (全屏轮播) --- */
         #bg-container {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2;
+            z-index: -3;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            transition: background-image 2s ease-in-out;
-            filter: brightness(0.85);
+            transition: background-image 4s ease-in-out; /* 4秒极柔和切换 */
+        }
+
+        /* 电影感暗角遮罩：让视线聚焦中心，同时保证文字清晰 */
+        #vignette-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
         }
 
         #snow-canvas {
@@ -71,246 +79,263 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
             opacity: 0;
-            pointer-events: none; /* 隐藏时不响应点击 */
-            transform: scale(0.95);
+            pointer-events: none;
+            transform: scale(0.95) translateY(20px);
         }
 
         .scene.active {
             opacity: 1;
             pointer-events: auto;
-            transform: scale(1);
+            transform: scale(1) translateY(0);
         }
 
         /* --- 场景1：开场 --- */
         .main-title {
-            font-size: 3.5rem;
-            font-weight: 700;
+            font-family: 'Ma Shan Zheng', cursive; /* 书法字体 */
+            font-size: 5rem;
             color: var(--snow-white);
             margin-bottom: 1rem;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            letter-spacing: 0.2em;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            letter-spacing: 0.1em;
+            opacity: 0.95;
         }
 
         .sub-title {
-            font-size: 1.2rem;
-            color: var(--snow-white);
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
             font-weight: 300;
-            opacity: 0.9;
-            margin-bottom: 3rem;
-            letter-spacing: 0.5em;
-            border-top: 1px solid var(--imperial-gold);
-            border-bottom: 1px solid var(--imperial-gold);
-            padding: 10px 0;
+            margin-bottom: 4rem;
+            letter-spacing: 0.6em;
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 12px 0;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
         }
 
         .btn-start {
-            background: rgba(168, 40, 40, 0.6);
-            border: 1px solid var(--imperial-gold);
-            color: var(--imperial-gold);
-            padding: 15px 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            color: var(--snow-white);
+            padding: 18px 60px;
             font-size: 1.2rem;
             font-family: 'Noto Serif SC', serif;
             cursor: pointer;
-            transition: all 0.4s ease;
+            transition: all 0.5s ease;
             border-radius: 50px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 0 15px rgba(198, 156, 109, 0.3);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            letter-spacing: 0.2em;
         }
 
         .btn-start:hover {
-            background: var(--imperial-gold);
-            color: var(--palace-red);
-            box-shadow: 0 0 25px rgba(198, 156, 109, 0.8);
+            background: rgba(212, 175, 55, 0.9); /* 鎏金背景 */
+            border-color: var(--imperial-gold);
+            color: #2c0e0e;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+            transform: translateY(-2px);
         }
 
-        /* --- 场景2：抽取界面 (新增) --- */
+        /* --- 场景2：抽取界面 --- */
         .draw-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
         .draw-circle {
-            width: 180px;
-            height: 180px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
-            border: 2px solid var(--imperial-gold);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             position: relative;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(4px);
-            transition: all 0.5s ease;
-            box-shadow: 0 0 30px rgba(198, 156, 109, 0.2);
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.1);
         }
 
         .draw-circle:hover {
-            transform: scale(1.05);
-            background: rgba(198, 156, 109, 0.2);
-            box-shadow: 0 0 50px rgba(198, 156, 109, 0.5);
+            transform: scale(1.08);
+            background: rgba(212, 175, 55, 0.15);
+            border-color: var(--imperial-gold);
+            box-shadow: 0 0 60px rgba(212, 175, 55, 0.4);
+        }
+
+        /* 呼吸光环 */
+        .ring {
+            position: absolute;
+            top: -15px; left: -15px; right: -15px; bottom: -15px;
+            border: 1px dashed rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
         }
 
         .draw-text {
             color: var(--snow-white);
-            font-size: 1.5rem;
-            letter-spacing: 0.3em;
-            writing-mode: vertical-rl; /* 竖排文字 */
+            font-size: 1.8rem;
+            letter-spacing: 0.4em;
+            writing-mode: vertical-rl;
             text-orientation: upright;
-            font-weight: bold;
-        }
-
-        /* 呼吸动画环 */
-        .ring {
-            position: absolute;
-            top: -10px; left: -10px; right: -10px; bottom: -10px;
-            border: 1px dashed var(--imperial-gold);
-            border-radius: 50%;
-            animation: spin 10s linear infinite;
-            opacity: 0.6;
+            font-family: 'Ma Shan Zheng', cursive;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
         .draw-hint {
-            margin-top: 40px;
-            color: var(--snow-white);
-            font-size: 1rem;
+            margin-top: 50px;
+            font-size: 1.1rem;
+            letter-spacing: 0.2em;
             opacity: 0.8;
-            letter-spacing: 0.1em;
+            font-weight: 300;
         }
 
-        /* 抽取时的加载状态 */
         .loading-text {
             display: none;
             color: var(--imperial-gold);
-            font-size: 1.2rem;
-            margin-top: 20px;
+            font-size: 1.3rem;
+            margin-top: 30px;
             letter-spacing: 0.2em;
-            animation: pulse 1s infinite;
+            animation: pulse 1.5s infinite ease-in-out;
         }
 
-        /* --- 场景3：结果展示 --- */
+        /* --- 场景3：结果卡片 (重点优化) --- */
         .poetry-card {
-            background: var(--glass-bg);
-            width: 420px;
-            padding: 50px 40px;
-            border-radius: 4px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            width: 440px;
+            padding: 60px 45px;
+            border-radius: 8px;
             text-align: center;
             position: relative;
-            border: 1px solid #e0e0e0;
-            background-image: linear-gradient(to right, transparent 50%, rgba(198, 156, 109, 0.1) 50%);
-            background-size: 100% 100%;
-            /* 初始状态由JS控制进入动画 */
+            
+            /* 玻璃拟态核心 */
+            background: rgba(255, 252, 245, 0.85); /* 暖白，降低不透明度 */
+            backdrop-filter: blur(12px); /* 强模糊，保证背景图可见但字清晰 */
+            -webkit-backdrop-filter: blur(12px);
+            
+            /* 光影质感 */
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4), /* 深邃阴影 */
+                inset 0 0 0 1px rgba(255, 255, 255, 0.8); /* 内部高光描边 */
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
-        .corner {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--imperial-gold);
-        }
-        .tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
-        .tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
-        .bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
-        .br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
-
+        /* 卡片内文字颜色优化，确保对比度 */
         .card-year {
             font-size: 0.9rem;
-            color: var(--palace-red);
+            color: #8B0000; /* 深红 */
             font-weight: 700;
-            letter-spacing: 0.2em;
-            margin-bottom: 30px;
-            font-family: Arial, sans-serif;
+            letter-spacing: 0.3em;
+            margin-bottom: 35px;
+            opacity: 0.8;
         }
 
         .poem-text {
-            font-size: 1.6rem;
-            line-height: 1.6;
-            color: #000;
-            margin-bottom: 20px;
+            font-size: 1.8rem;
+            line-height: 1.5;
+            color: #1a1a1a; /* 近乎全黑，保证清晰 */
+            margin-bottom: 25px;
             font-weight: 700;
+            font-family: 'Songti SC', serif;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.8); /* 文字凸起感 */
         }
 
         .poem-source {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 30px;
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 35px;
             font-style: italic;
         }
 
         .divider {
-            width: 40px;
-            height: 2px;
-            background: var(--palace-red);
-            margin: 0 auto 30px auto;
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(to right, transparent, #8B0000, transparent);
+            margin: 0 auto 35px auto;
+            opacity: 0.6;
         }
 
         .poem-desc {
-            font-size: 1rem;
-            line-height: 1.8;
-            color: #444;
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: #333;
             text-align: justify;
             text-align-last: center;
+            font-weight: 400;
         }
 
+        /* 装饰角标 */
+        .corner {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            border: 2px solid var(--imperial-gold);
+            opacity: 0.8;
+            transition: all 0.5s;
+        }
+        .tl { top: 15px; left: 15px; border-right: none; border-bottom: none; }
+        .tr { top: 15px; right: 15px; border-left: none; border-bottom: none; }
+        .bl { bottom: 15px; left: 15px; border-right: none; border-top: none; }
+        .br { bottom: 15px; right: 15px; border-left: none; border-top: none; }
+
         .stamp {
-            margin-top: 30px;
-            width: 30px;
-            height: 30px;
-            background: var(--palace-red);
-            color: white;
-            font-size: 12px;
-            line-height: 30px;
+            margin-top: 40px;
+            width: 36px;
+            height: 36px;
+            background: #8B0000;
+            color: #fff;
+            font-size: 16px;
+            line-height: 36px;
             border-radius: 4px;
             display: inline-block;
-            font-weight: bold;
-            opacity: 0.8;
+            box-shadow: 0 2px 6px rgba(139, 0, 0, 0.4);
+            font-family: 'Ma Shan Zheng', cursive;
         }
 
         .actions {
-            margin-top: 30px;
+            margin-top: 40px;
             display: flex;
             gap: 20px;
         }
 
         .btn-action {
-            background: transparent;
-            border: 1px solid var(--snow-white);
-            color: var(--snow-white);
-            padding: 10px 25px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: #fff;
+            padding: 12px 30px;
             cursor: pointer;
             border-radius: 30px;
-            font-family: 'Noto Serif SC';
             transition: all 0.3s;
-            font-size: 0.9rem;
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(4px);
+            font-size: 0.95rem;
         }
 
         .btn-action:hover {
             background: var(--imperial-gold);
             border-color: var(--imperial-gold);
-            color: var(--palace-red);
+            color: #2c0e0e;
         }
 
-        /* 动画关键帧 */
+        /* 动画 */
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         /* 移动端适配 */
         @media (max-width: 600px) {
-            .main-title { font-size: 2.2rem; }
-            .poetry-card { width: 90%; padding: 30px 20px; }
-            .poem-text { font-size: 1.4rem; }
+            .main-title { font-size: 3.5rem; }
+            .poetry-card { width: 90%; padding: 40px 25px; }
+            .poem-text { font-size: 1.5rem; }
+            .draw-circle { width: 160px; height: 160px; }
         }
     </style>
 </head>
 <body>
 
     <div id="bg-container"></div>
+    <div id="vignette-overlay"></div>
     <canvas id="snow-canvas"></canvas>
 
     <div class="container">
@@ -329,7 +354,7 @@
                     <div class="draw-text">开启签文</div>
                 </div>
                 <div class="draw-hint" id="drawHint">点击抽取你的新年寄语</div>
-                <div class="loading-text" id="loadingText">正在雪中寻觅...</div>
+                <div class="loading-text" id="loadingText">瑞雪兆丰年，正在寻觅...</div>
             </div>
         </div>
 
@@ -359,7 +384,15 @@
     </div>
 
     <script>
-        // --- 数据配置 (基于用户提供的文档) ---
+        // --- 1. 背景配置 (GitHub Raw) ---
+        const bgImages = [
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/故宫.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/故宫2.jpg',
+            'https://raw.githubusercontent.com/clorisxuan8-sys/1/main/images/故宫3.jpg'
+        ];
+
+        // --- 2. 诗词数据 ---
+        //
         const poems = [
             {
                 text: "老去又逢新岁月<br>春来更有好花枝",
@@ -413,23 +446,22 @@
             }
         ];
 
-        // --- 场景管理逻辑 ---
+        // --- 3. 场景逻辑 ---
         function switchScene(fromId, toId) {
             const fromScene = document.getElementById(fromId);
             const toScene = document.getElementById(toId);
             
             fromScene.classList.remove('active');
+            // 稍作延迟，让淡出更自然
             setTimeout(() => {
                 toScene.classList.add('active');
-            }, 800); // 等待淡出动画完成
+            }, 800);
         }
 
-        // 1. 首页 -> 抽取页
         function goToDraw() {
             switchScene('scene-intro', 'scene-draw');
         }
 
-        // 2. 执行抽取逻辑（仪式感核心）
         let isDrawing = false;
         function performDraw() {
             if (isDrawing) return;
@@ -439,15 +471,13 @@
             const hint = document.getElementById('drawHint');
             const loading = document.getElementById('loadingText');
 
-            // 动画状态：按钮旋转变快，文字变化
             drawBtn.style.transform = 'scale(0.9) rotate(180deg)';
-            drawBtn.style.opacity = '0.5';
+            drawBtn.style.opacity = '0.6';
             hint.style.opacity = '0';
             loading.style.display = 'block';
 
-            // 模拟抽签的等待时间 (1.5秒)
+            // 延长到2秒，让用户多感受一会儿雪景
             setTimeout(() => {
-                // 准备数据
                 const randomIndex = Math.floor(Math.random() * poems.length);
                 const data = poems[randomIndex];
                 
@@ -455,10 +485,8 @@
                 document.getElementById('pSource').innerText = data.source;
                 document.getElementById('pDesc').innerText = data.desc;
 
-                // 切换到结果页
                 switchScene('scene-draw', 'scene-result');
                 
-                // 重置抽取页状态（为了下一次）
                 setTimeout(() => {
                     isDrawing = false;
                     drawBtn.style.transform = 'scale(1) rotate(0deg)';
@@ -466,26 +494,34 @@
                     hint.style.opacity = '0.8';
                     loading.style.display = 'none';
                 }, 1000);
-
-            }, 1500);
+            }, 2000);
         }
 
-        // 3. 结果页 -> 抽取页 (再抽一次)
         function resetToDraw() {
             switchScene('scene-result', 'scene-draw');
         }
 
-        // --- 核心功能：下载卡片 ---
         function downloadCard() {
             const element = document.getElementById('captureTarget');
+            // 暂时移除磨砂和透明效果以保证导出的图片背景不黑
+            const originalBackground = element.style.background;
             const originalTransform = element.style.transform;
-            element.style.transform = "none"; 
             
+            // 导出时稍微调白一点背景，防止字看不清，同时保持圆角
+            element.style.background = "rgba(255, 252, 245, 0.95)";
+            element.style.transform = "none";
+            element.style.boxShadow = "none"; // 移除阴影防止导出边缘黑晕
+
             html2canvas(element, {
-                backgroundColor: null,
-                scale: 2
+                backgroundColor: null, // 透明背景，这样圆角外是透明的
+                scale: 3, // 超高清
+                useCORS: true 
             }).then(canvas => {
+                // 恢复样式
+                element.style.background = originalBackground;
                 element.style.transform = originalTransform;
+                element.style.boxShadow = ""; 
+
                 const link = document.createElement('a');
                 link.download = '2026新年签.png';
                 link.href = canvas.toDataURL('image/png');
@@ -493,8 +529,7 @@
             });
         }
 
-        // --- 视觉效果：背景与粒子 ---
-        const bgImages = ['故宫.jpg', '故宫2.jpg', '故宫3.jpg'];
+        // --- 4. 背景轮播逻辑 (已优化) ---
         let currentBgIndex = 0;
         const bgContainer = document.getElementById('bg-container');
 
@@ -502,17 +537,16 @@
             const img = new Image();
             img.onload = () => {
                  bgContainer.style.backgroundImage = `url('${bgImages[0]}')`;
+                 // 开启平滑轮播
                  setInterval(() => {
                     currentBgIndex = (currentBgIndex + 1) % bgImages.length;
                     bgContainer.style.backgroundImage = `url('${bgImages[currentBgIndex]}')`;
-                }, 6000);
-            };
-            img.onerror = () => {
-                bgContainer.style.background = "linear-gradient(45deg, #8B0000, #C69C6D)";
+                }, 7000); // 7秒切换，配合CSS的4秒过渡，极其丝滑
             };
             img.src = bgImages[0];
         }
 
+        // --- 5. 慢速雪效 (Snow Logic Optimized) ---
         function initSnow() {
             const canvas = document.getElementById('snow-canvas');
             const scene = new THREE.Scene();
@@ -520,27 +554,32 @@
             const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
 
-            const particleCount = 1500;
+            // 增加粒子数量，但减慢速度
+            const particleCount = 2000;
             const geometry = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3);
             const velocities = new Float32Array(particleCount);
+            const drift = new Float32Array(particleCount); // 增加水平飘动参数
 
             for (let i = 0; i < particleCount; i++) {
-                positions[i * 3] = (Math.random() - 0.5) * 20;
-                positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
-                positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
-                velocities[i] = 0.02 + Math.random() * 0.05;
+                positions[i * 3] = (Math.random() - 0.5) * 25;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 25;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 25;
+                // 极慢的下落速度：0.002 ~ 0.006
+                velocities[i] = 0.002 + Math.random() * 0.004; 
+                drift[i] = (Math.random() - 0.5) * 0.005; // 随机左右飘
             }
 
             geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
+            // 更柔和的雪花纹理
             function getSprite() {
                 const canvas = document.createElement('canvas');
                 canvas.width = 32; canvas.height = 32;
                 const context = canvas.getContext('2d');
                 const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
-                gradient.addColorStop(0, 'rgba(255,255,255,1)');
-                gradient.addColorStop(0.5, 'rgba(255,255,255,0.3)');
+                gradient.addColorStop(0, 'rgba(255,255,255,0.9)');
+                gradient.addColorStop(0.4, 'rgba(255,255,255,0.4)');
                 gradient.addColorStop(1, 'rgba(0,0,0,0)');
                 context.fillStyle = gradient;
                 context.fillRect(0, 0, 32, 32);
@@ -548,8 +587,12 @@
             }
 
             const material = new THREE.PointsMaterial({
-                size: 0.15, map: getSprite(), transparent: true, opacity: 0.8,
-                depthWrite: false, blending: THREE.AdditiveBlending
+                size: 0.12, 
+                map: getSprite(), 
+                transparent: true, 
+                opacity: 0.8,
+                depthWrite: false, 
+                blending: THREE.AdditiveBlending
             });
 
             const particles = new THREE.Points(geometry, material);
@@ -559,19 +602,32 @@
             function animate() {
                 requestAnimationFrame(animate);
                 const positions = particles.geometry.attributes.position.array;
+                
                 for (let i = 0; i < particleCount; i++) {
+                    // 下落
                     positions[i * 3 + 1] -= velocities[i];
-                    positions[i * 3] += Math.sin(Date.now() * 0.001 + positions[i * 3 + 1]) * 0.002;
-                    if (positions[i * 3 + 1] < -10) {
-                        positions[i * 3 + 1] = 10;
-                        positions[i * 3] = (Math.random() - 0.5) * 20;
+                    
+                    // 左右飘动 (Sine wave + random drift)
+                    positions[i * 3] += Math.sin(Date.now() * 0.0005 + positions[i * 3 + 1]) * 0.002 + drift[i];
+
+                    // 循环逻辑
+                    if (positions[i * 3 + 1] < -12) {
+                        positions[i * 3 + 1] = 12;
+                        positions[i * 3] = (Math.random() - 0.5) * 25;
                     }
                 }
+                
                 particles.geometry.attributes.position.needsUpdate = true;
-                particles.rotation.y += 0.0005;
+                
+                // 整个场景缓慢旋转，模拟视线移动
+                particles.rotation.y += 0.0002;
+                particles.rotation.x += 0.0001;
+
                 renderer.render(scene, camera);
             }
+
             animate();
+
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
