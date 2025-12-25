@@ -12,7 +12,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
 
         :root {
-            /* 调色板：深邃故宫红与鎏金 */
+            /* 调色板 */
             --bg-deep: #1a0505;
             --palace-red: #7c1a1a;
             --gold-gradient: linear-gradient(135deg, #fce3ba 0%, #d4af37 50%, #fce3ba 100%);
@@ -44,7 +44,6 @@
             filter: brightness(0.9) contrast(1.1);
         }
 
-        /* 电影质感滤镜 */
         #texture-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -153,7 +152,7 @@
             transform: translateY(-3px);
         }
 
-        /* --- 场景2：仪式感抽取 (Moon Gate) - 修改字体与布局 --- */
+        /* --- 场景2：仪式感抽取 --- */
         .moon-gate-container {
             position: relative;
             width: 320px;
@@ -202,33 +201,24 @@
             box-shadow: 0 0 80px rgba(212, 175, 55, 0.3);
         }
 
-        /* 【修改】字体与布局：端庄宋体，横排 */
         .draw-text-group {
             display: flex;
-            flex-direction: column; /* 竖向排列两行文字 */
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 10px; /* 两行之间的间距 */
-            
-            font-family: 'Noto Serif SC', serif; /* 端庄宋体 */
-            font-weight: 700; /* 加粗更有气势 */
+            gap: 10px;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 700;
             color: #fff;
             text-shadow: 0 2px 10px rgba(0,0,0,0.8);
             pointer-events: none;
         }
         
-        /* 第一行：开启你的 */
-        .draw-text-group .line-1 {
-            font-size: 1.8rem;
-            letter-spacing: 0.2em;
-            opacity: 0.9;
-        }
-
-        /* 第二行：诗意新年 (加大一点) */
+        .draw-text-group .line-1 { font-size: 1.8rem; letter-spacing: 0.2em; opacity: 0.9; }
         .draw-text-group .line-2 {
             font-size: 2.2rem;
             letter-spacing: 0.3em;
-            color: #d4af37; /* 金色 */
+            color: #d4af37;
             background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -263,6 +253,15 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             transform-style: preserve-3d;
             transition: transform 0.1s;
+        }
+
+        /* 内部内容容器，用于刷新动画 */
+        .content-transition-group {
+            transition: opacity 0.5s ease, filter 0.5s ease;
+        }
+        .refreshing .content-transition-group {
+            opacity: 0;
+            filter: blur(8px);
         }
 
         .ornament-top {
@@ -422,18 +421,22 @@
                 <div class="poetry-card" id="captureTarget">
                     <div class="ornament-top"></div>
                     <div class="card-header">2026 NEW YEAR</div>
-                    <div class="poem-text" id="pText"></div>
-                    <div class="poem-source" id="pSource"></div>
-                    <div class="desc-box">
-                        <div class="poem-desc" id="pDesc"></div>
+                    
+                    <div class="content-transition-group">
+                        <div class="poem-text" id="pText"></div>
+                        <div class="poem-source" id="pSource"></div>
+                        <div class="desc-box">
+                            <div class="poem-desc" id="pDesc"></div>
+                        </div>
                     </div>
+                    
                     <div class="stamp-mark">福</div>
                 </div>
             </div>
 
             <div class="actions">
                 <button class="btn-text" onclick="downloadCard()">下载珍藏</button>
-                <button class="btn-icon" onclick="resetToDraw()" title="再抽一次">↻</button>
+                <button class="btn-icon" onclick="redrawDirectly()" title="再抽一次">↻</button>
             </div>
         </div>
 
@@ -461,6 +464,8 @@
             { text: "休将旧事从头说<br>且喜新年入手来", source: "宋词人", desc: "真正的成熟是承认过去、然后放下。新年已如礼物般握在掌中，愿你轻装前行，把热情与勇气留给正在到来的时光。" }
         ];
 
+        let lastIndex = -1; // 用于记录上一次抽到的索引，防止连续重复
+
         // --- 3. 交互逻辑 ---
         function switchScene(fromId, toId) {
             const fromScene = document.getElementById(fromId);
@@ -472,6 +477,8 @@
         function goToDraw() { switchScene('scene-intro', 'scene-draw'); }
 
         let isDrawing = false;
+        
+        // 第一次抽取（走完整仪式）
         function performDraw() {
             if (isDrawing) return;
             isDrawing = true;
@@ -485,12 +492,9 @@
             loading.style.animation = 'pulse-glow 1.5s infinite';
 
             setTimeout(() => {
-                const randomIndex = Math.floor(Math.random() * poems.length);
-                const data = poems[randomIndex];
-                document.getElementById('pText').innerHTML = data.text;
-                document.getElementById('pSource').innerText = data.source;
-                document.getElementById('pDesc').innerText = data.desc;
+                updateCardContent(); // 抽取内容
                 switchScene('scene-draw', 'scene-result');
+                
                 setTimeout(() => {
                     isDrawing = false;
                     drawBtn.style.transform = 'scale(1)';
@@ -501,7 +505,39 @@
             }, 2000);
         }
 
-        function resetToDraw() { switchScene('scene-result', 'scene-draw'); }
+        // 核心：原地重新抽取
+        function redrawDirectly() {
+            if (isDrawing) return;
+            isDrawing = true;
+
+            const card = document.querySelector('.poetry-card');
+            // 添加刷新动画类
+            card.classList.add('refreshing');
+
+            setTimeout(() => {
+                updateCardContent(); // 更新数据
+                // 稍微等待一下再移除模糊，让切换更顺滑
+                setTimeout(() => {
+                    card.classList.remove('refreshing');
+                    isDrawing = false;
+                }, 200); 
+            }, 500); // 500ms 后更新内容
+        }
+
+        // 抽取算法（带去重）
+        function updateCardContent() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * poems.length);
+            } while (newIndex === lastIndex && poems.length > 1);
+            
+            lastIndex = newIndex;
+            const data = poems[newIndex];
+
+            document.getElementById('pText').innerHTML = data.text;
+            document.getElementById('pSource').innerText = data.source;
+            document.getElementById('pDesc').innerText = data.desc;
+        }
 
         function downloadCard() {
             const element = document.getElementById('captureTarget');
@@ -543,7 +579,7 @@
             img.src = bgImages[0];
         }
 
-        // --- 5. 3D粒子雪效 (升级版) ---
+        // --- 5. 3D粒子雪效 ---
         function initSnow() {
             const canvas = document.getElementById('snow-canvas');
             const scene = new THREE.Scene();
