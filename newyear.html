@@ -3,59 +3,740 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>元旦快乐</title>
+    <title>🎊 2025 新年快乐 🎊</title>
     <style>
-        body {
+        * {
             margin: 0;
-            overflow: hidden;
-            background: linear-gradient(to bottom, #ffcccc, #ffcc99);
-            font-family: 'Arial', sans-serif;
-            color: #fff;
+            padding: 0;
+            box-sizing: border-box;
         }
-        #greeting {
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0c0c1e 0%, #1a0a2e 50%, #16213e 100%);
+            overflow-x: hidden;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        /* 星空背景 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* 烟花画布 */
+        #fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* 开场动画 */
+        .intro-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #1a0a2e 0%, #0c0c1e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeOutIntro 1s ease-out 4s forwards;
+        }
+
+        .countdown-number {
+            font-size: 150px;
+            color: #ffd700;
+            text-shadow: 0 0 30px #ffd700, 0 0 60px #ff6b6b, 0 0 90px #ffd700;
+            animation: pulse 1s ease-in-out;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeOutIntro {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* 标题区域 */
+        .title-section {
+            text-align: center;
+            margin-top: 30px;
+            animation: slideDown 1.5s ease-out 4s both;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .year-text {
+            font-size: 120px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ffd700, #ff6b6b, #ffd700, #ff8c00);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientMove 3s ease infinite;
+            text-shadow: none;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 48px;
+            color: #ff6b6b;
+            text-shadow: 0 0 20px #ff6b6b, 0 0 40px #ffd700;
+            margin-top: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #ff6b6b, 0 0 40px #ffd700; }
+            to { text-shadow: 0 0 30px #ffd700, 0 0 60px #ff6b6b, 0 0 80px #ffd700; }
+        }
+
+        /* 灯笼 */
+        .lantern-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .lantern {
+            width: 80px;
+            height: 100px;
+            animation: swing 3s ease-in-out infinite;
+            transform-origin: top center;
+        }
+
+        .lantern:nth-child(even) {
+            animation-delay: -1.5s;
+        }
+
+        @keyframes swing {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        .lantern-body {
+            width: 70px;
+            height: 90px;
+            background: linear-gradient(180deg, #ff4444 0%, #cc0000 50%, #ff4444 100%);
+            border-radius: 50% 50% 45% 45%;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 0 30px rgba(255, 100, 0, 0.8), inset 0 0 20px rgba(255, 200, 0, 0.3);
+        }
+
+        .lantern-body::before {
+            content: '福';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 3em;
-            animation: fadeIn 2s;
+            font-size: 36px;
+            color: #ffd700;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ffd700;
         }
+
+        .lantern-top {
+            width: 30px;
+            height: 15px;
+            background: #ffd700;
+            margin: 0 auto;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .lantern-line {
+            width: 2px;
+            height: 30px;
+            background: #ffd700;
+            margin: 0 auto;
+        }
+
+        .lantern-bottom {
+            width: 20px;
+            height: 25px;
+            background: linear-gradient(180deg, #ffd700, #ff8c00);
+            margin: 0 auto;
+            border-radius: 0 0 50% 50%;
+        }
+
+        .tassel {
+            width: 4px;
+            height: 40px;
+            background: linear-gradient(180deg, #ffd700, #ff4444);
+            margin: 0 auto;
+            animation: tassleSwing 2s ease-in-out infinite;
+        }
+
+        @keyframes tassleSwing {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* 祝福语卡片区 */
+        .blessings-section {
+            margin-top: 50px;
+            animation: fadeIn 2s ease-out 4.5s both;
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .fireworks {
+
+        .blessing-card {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 107, 107, 0.2));
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 20px;
+            padding: 30px 50px;
+            margin: 20px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            animation: float 4s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .blessing-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .blessing-text {
+            font-size: 28px;
+            color: #ffd700;
+            line-height: 1.8;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        /* 滚动祝福 */
+        .scroll-blessings {
+            width: 100%;
+            overflow: hidden;
+            padding: 20px 0;
+            margin-top: 30px;
+        }
+
+        .scroll-track {
+            display: flex;
+            animation: scroll 20s linear infinite;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .scroll-item {
+            flex-shrink: 0;
+            padding: 15px 30px;
+            margin: 0 20px;
+            background: linear-gradient(135deg, #ff6b6b, #ff8c00);
+            border-radius: 30px;
+            color: white;
+            font-size: 18px;
+            white-space: nowrap;
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        /* 红包区域 */
+        .hongbao-section {
+            margin-top: 50px;
+            text-align: center;
+            animation: fadeIn 2s ease-out 5s both;
+        }
+
+        .hongbao-title {
+            font-size: 24px;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .hongbao {
+            width: 120px;
+            height: 160px;
+            background: linear-gradient(180deg, #ff4444 0%, #cc0000 100%);
+            border-radius: 10px 10px 50% 50%;
+            margin: 0 auto;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            animation: hongbaoBounce 2s ease-in-out infinite;
+        }
+
+        .hongbao:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 0, 0, 0.7);
+        }
+
+        @keyframes hongbaoBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hongbao-circle {
+            width: 50px;
+            height: 50px;
+            background: #ffd700;
+            border-radius: 50%;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #cc0000;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+
+        .hongbao-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(180deg, #ff6666 0%, #ff4444 100%);
+            border-radius: 10px 10px 0 0;
+            transform-origin: top center;
+            transition: transform 0.5s ease;
+        }
+
+        .hongbao.opened .hongbao-flap {
+            transform: rotateX(-180deg);
+        }
+
+        .hongbao-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            color: #ffd700;
+            opacity: 0;
+            transition: opacity 0.5s ease 0.3s;
+            text-align: center;
+            width: 100px;
+        }
+
+        .hongbao.opened .hongbao-message {
+            opacity: 1;
+        }
+
+        .hongbao.opened .hongbao-circle {
+            opacity: 0;
+        }
+
+        /* 雪花/金币飘落 */
+        .particles {
             position: fixed;
-            z-index: -1;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 20px;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0.3; }
+        }
+
+        /* 底部祝福 */
+        .footer-blessing {
+            margin-top: 60px;
+            margin-bottom: 40px;
+            text-align: center;
+            animation: fadeIn 2s ease-out 5.5s both;
+        }
+
+        .footer-text {
+            font-size: 22px;
+            color: rgba(255, 215, 0, 0.8);
+            line-height: 2;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .year-text { font-size: 60px; }
+            .subtitle { font-size: 28px; }
+            .blessing-text { font-size: 20px; }
+            .blessing-card { padding: 20px 30px; margin: 15px; }
+            .lantern { width: 50px; height: 65px; }
+            .lantern-body { width: 45px; height: 55px; }
+            .lantern-body::before { font-size: 22px; }
+            .countdown-number { font-size: 80px; }
         }
     </style>
 </head>
 <body>
-    <div id="greeting"></div>
-    <video autoplay loop muted class="fireworks">
-        <source src="fireworks.mp4" type="video/mp4">
-    </video>
+    <!-- 开场倒计时动画 -->
+    <div class="intro-animation" id="intro">
+        <div class="countdown-number" id="countdownNum">3</div>
+    </div>
+
+    <!-- 星空背景 -->
+    <div class="stars" id="stars"></div>
+
+    <!-- 烟花画布 -->
+    <canvas id="fireworks"></canvas>
+
+    <!-- 飘落粒子 -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 灯笼 -->
+    <div class="lantern-container">
+        <div class="lantern">
+            <div class="lantern-line"></div>
+            <div class="lantern-top"></div>
+            <div class="lantern-body"></div>
+            <div class="lantern-bottom"></div>
+            <div class="tassel"></div>
+        </div>
+        <div class="lantern">
+            <div class="lantern-line"></div>
+            <div class="lantern-top"></div>
+            <div class="lantern-body"></div>
+            <div class="lantern-bottom"></div>
+            <div class="tassel"></div>
+        </div>
+        <div class="lantern">
+            <div class="lantern-line"></div>
+            <div class="lantern-top"></div>
+            <div class="lantern-body"></div>
+            <div class="lantern-bottom"></div>
+            <div class="tassel"></div>
+        </div>
+        <div class="lantern">
+            <div class="lantern-line"></div>
+            <div class="lantern-top"></div>
+            <div class="lantern-body"></div>
+            <div class="lantern-bottom"></div>
+            <div class="tassel"></div>
+        </div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+        <div class="title-section">
+            <div class="year-text">2025</div>
+            <div class="subtitle">🎊 新年快乐 🎊</div>
+        </div>
+
+        <!-- 祝福卡片 -->
+        <div class="blessings-section">
+            <div class="blessing-card">
+                <div class="blessing-text">
+                    🧧 恭贺新禧，万事如意 🧧<br>
+                    🎆 阖家欢乐，幸福安康 🎆<br>
+                    ✨ 前程似锦，心想事成 ✨
+                </div>
+            </div>
+        </div>
+
+        <!-- 滚动祝福 -->
+        <div class="scroll-blessings">
+            <div class="scroll-track">
+                <div class="scroll-item">🎉 蛇年大吉</div>
+                <div class="scroll-item">💰 财源广进</div>
+                <div class="scroll-item">❤️ 身体健康</div>
+                <div class="scroll-item">📚 学业有成</div>
+                <div class="scroll-item">💼 事业顺利</div>
+                <div class="scroll-item">🏠 阖家幸福</div>
+                <div class="scroll-item">🌟 好运连连</div>
+                <div class="scroll-item">🎊 吉祥如意</div>
+                <div class="scroll-item">🎉 蛇年大吉</div>
+                <div class="scroll-item">💰 财源广进</div>
+                <div class="scroll-item">❤️ 身体健康</div>
+                <div class="scroll-item">📚 学业有成</div>
+                <div class="scroll-item">💼 事业顺利</div>
+                <div class="scroll-item">🏠 阖家幸福</div>
+                <div class="scroll-item">🌟 好运连连</div>
+                <div class="scroll-item">🎊 吉祥如意</div>
+            </div>
+        </div>
+
+        <!-- 红包互动 -->
+        <div class="hongbao-section">
+            <div class="hongbao-title">✨ 点击红包领取新年祝福 ✨</div>
+            <div class="hongbao" id="hongbao" onclick="openHongbao()">
+                <div class="hongbao-flap"></div>
+                <div class="hongbao-circle">福</div>
+                <div class="hongbao-message" id="hongbaoMsg">恭喜发财</div>
+            </div>
+        </div>
+
+        <!-- 底部祝福 -->
+        <div class="footer-blessing">
+            <div class="footer-text">
+                🐍 2025蛇年 · 金蛇献瑞 🐍<br>
+                愿你在新的一年里<br>
+                🌸 春风得意，笑口常开 🌸<br>
+                💫 梦想成真，万事胜意 💫
+            </div>
+        </div>
+    </div>
 
     <script>
-        const greetings = [
-            "元旦快乐！祝您新年快乐，万事如意！",
-            "愿新的一年带给你幸福和成功！",
-            "祝您在新的一年里心想事成，事事顺心！"
-        ];
+        // 开场倒计时
+        const countdownEl = document.getElementById('countdownNum');
+        let count = 3;
+        
+        const countdownInterval = setInterval(() => {
+            count--;
+            if (count > 0) {
+                countdownEl.textContent = count;
+                countdownEl.style.animation = 'none';
+                setTimeout(() => countdownEl.style.animation = 'pulse 1s ease-in-out', 10);
+            } else if (count === 0) {
+                countdownEl.textContent = '🎆';
+                countdownEl.style.fontSize = '100px';
+            } else {
+                clearInterval(countdownInterval);
+            }
+        }, 1000);
 
-        function displayGreeting() {
-            const greetingElement = document.getElementById('greeting');
-            greetingElement.textContent = greetings[Math.floor(Math.random() * greetings.length)];
-            greetingElement.style.animation = 'none'; // Reset animation
-            setTimeout(() => {
-                greetingElement.style.animation = '';
-            }, 10);
+        // 创建星星
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        createStars();
+
+        // 创建飘落粒子
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const emojis = ['✨', '🌟', '⭐', '💫', '🎊', '🧧', '🎉'];
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                container.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 7000);
+            }, 300);
+        }
+        createParticles();
+
+        // 烟花效果
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 8,
+                    y: (Math.random() - 0.5) * 8
+                };
+                this.alpha = 1;
+                this.decay = Math.random() * 0.015 + 0.01;
+                this.size = Math.random() * 3 + 1;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update() {
+                this.velocity.y += 0.05;
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= this.decay;
+            }
         }
 
-        displayGreeting();
-        setInterval(displayGreeting, 5000); // 每5秒换一次祝福
+        class Firework {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height;
+                this.targetY = Math.random() * (canvas.height * 0.5);
+                this.velocity = { x: 0, y: -8 - Math.random() * 4 };
+                this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                this.exploded = false;
+                this.particles = [];
+            }
+
+            draw() {
+                if (!this.exploded) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+                this.particles.forEach(p => p.draw());
+            }
+
+            update() {
+                if (!this.exploded) {
+                    this.y += this.velocity.y;
+                    if (this.y <= this.targetY) {
+                        this.explode();
+                    }
+                }
+                this.particles.forEach((p, i) => {
+                    p.update();
+                    if (p.alpha <= 0) {
+                        this.particles.splice(i, 1);
+                    }
+                });
+            }
+
+            explode() {
+                this.exploded = true;
+                const colors = [this.color, '#ffd700', '#ff6b6b', '#ffffff'];
+                for (let i = 0; i < 80; i++) {
+                    this.particles.push(
+                        new Particle(this.x, this.y, colors[Math.floor(Math.random() * colors.length)])
+                    );
+                }
+            }
+        }
+
+        let fireworks = [];
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            fireworks.forEach((fw, i) => {
+                fw.update();
+                fw.draw();
+                if (fw.exploded && fw.particles.length === 0) {
+                    fireworks.splice(i, 1);
+                }
+            });
+
+            if (Math.random() < 0.03) {
+                fireworks.push(new Firework());
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        setTimeout(() => {
+            animate();
+        }, 4000);
+
+        // 红包互动
+        const blessings = [
+            '恭喜发财 💰',
+            '万事如意 🎊',
+            '心想事成 ✨',
+            '大吉大利 🧧',
+            '好运连连 🌟',
+            '财源滚滚 💎',
+            '幸福美满 ❤️',
+            '步步高升 📈'
+        ];
+
+        function openHongbao() {
+            const hongbao = document.getElementById('hongbao');
+            const msg = document.getElementById('hongbaoMsg');
+            
+            if (!hongbao.classList.contains('opened')) {
+                hongbao.classList.add('opened');
+                msg.textContent = blessings[Math.floor(Math.random() * blessings.length)];
+                
+                // 3秒后重置
+                setTimeout(() => {
+                    hongbao.classList.remove('opened');
+                }, 3000);
+            }
+        }
     </script>
 </body>
 </html>
